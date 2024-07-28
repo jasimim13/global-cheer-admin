@@ -37,6 +37,7 @@ const Community = () => {
   const [isCommunityAllowed, setIsCommunityAllowed] = useState(false);
   const [open, setOpen] = useState(false);
   const [postTitle, setPostTitle] = useState("");
+  const [postDescription, setPostDescription] = useState("");
   const [postImage, setPostImage] = useState(null);
   const [posts, setPosts] = useState([
     {
@@ -62,6 +63,10 @@ const Community = () => {
 
   const handlePostChange = (event) => {
     setPostTitle(event.target.value);
+  };
+
+  const handleDescriptionChange = (event) => {
+    setPostDescription(event.target.value);
   };
 
   const handleImageChange = (event) => {
@@ -220,12 +225,20 @@ const Community = () => {
                 value={postTitle}
                 onChange={handlePostChange}
               />
+              <TextField
+                label="Post Description"
+                fullWidth
+                margin="normal"
+                value={postDescription}
+                onChange={handleDescriptionChange}
+                multiline
+              />
               <Button
                 variant="contained"
                 component="label"
-                sx={{ marginTop: 2 }}
+                sx={{ marginTop: 2, marginRight: 2 }}
               >
-                Upload Image
+                Upload Images
                 <input type="file" hidden onChange={handleImageChange} />
               </Button>
               <Button

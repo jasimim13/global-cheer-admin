@@ -225,23 +225,14 @@ const Events = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Cover Image URL"
-                name="cover_image"
-                value={eventData.cover_image}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                required
-                fullWidth
-              />
+            <Button
+                variant="contained"
+                component="label"
+                sx={{ marginTop: 2, marginRight: 2 }}
+              >
+                Upload Images
+                <input type="file" hidden onChange={handleImageChange} />
+              </Button>
             </Grid>
           </Grid>
           <Button

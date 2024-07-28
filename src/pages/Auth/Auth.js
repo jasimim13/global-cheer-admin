@@ -12,6 +12,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -39,6 +40,8 @@ export default function Auth() {
       password: data.get('password'),
     });
   };
+
+  const navigate = useNavigate();
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -108,7 +111,7 @@ export default function Auth() {
                 type="submit"
                 fullWidth
                 variant="contained"
-            
+                onClick={() => navigate("/")}
                 sx={{ mt: 3, mb: 2, backgroundColor: '#ED1F24' }}
               >
                 Sign In

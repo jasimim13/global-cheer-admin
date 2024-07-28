@@ -1,7 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, Button } from '@mui/material';
 import { FaUser, FaCalendarAlt, FaTshirt, FaUsers, FaChartLine, FaQrcode } from 'react-icons/fa';
 import { GoPackageDependents } from "react-icons/go";
 
@@ -20,6 +20,7 @@ const Home = () => {
   ];
 
   return (
+    
     <Box
       display="flex"
       flexDirection="column"
@@ -29,6 +30,16 @@ const Home = () => {
       sx={{ mt: 4 }}
     >
       <img src="/images/Logo.jpeg" alt="Logo" style={{ height: '100px', width: '200px' }} />
+      <Box width="100%" display="flex" justifyContent="flex-end">
+    <Button
+      variant="contained"
+      color="error"
+      sx={{ backgroundColor: "#ED1F24", color: "white", marginRight: "15px" }}
+      onClick={() => navigate("/auth")}
+    >
+      Log Out
+    </Button>
+  </Box>
 
       <Grid container spacing={3} sx={{ mt: 4, paddingX: 20 }}>
         {cards.map((card, index) => (

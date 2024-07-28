@@ -33,6 +33,7 @@ const Merchandise = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [selectedMerch, setSelectedMerch] = useState(null);
+  const [postImage, setPostImage] = useState(null);
   const [merchData, setMerchData] = useState({
     name: "",
     description: "",
@@ -122,6 +123,10 @@ const Merchandise = () => {
     e.preventDefault();
     console.log(merchData);
     handleEditClose();
+  };
+
+  const handleImageChange = (event) => {
+    setPostImage(event.target.files[0]);
   };
 
   const navigate = useNavigate();
@@ -244,16 +249,6 @@ const Merchandise = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Image URL"
-                name="image_url"
-                value={merchData.image_url}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 label="Stock"
                 name="stock"
                 type="number"
@@ -262,6 +257,16 @@ const Merchandise = () => {
                 fullWidth
                 required
               />
+            </Grid>
+            <Grid item xs={12}>
+            <Button
+                variant="contained"
+                component="label"
+                sx={{ marginTop: 2, marginRight: 2 }}
+              >
+                Upload Images
+                <input type="file" hidden onChange={handleImageChange} />
+              </Button>
             </Grid>
           </Grid>
           <Button
@@ -491,16 +496,6 @@ const Merchandise = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                label="Image URL"
-                name="image_url"
-                value={merchData.image_url}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
                 label="Stock"
                 name="stock"
                 type="number"
@@ -509,6 +504,16 @@ const Merchandise = () => {
                 fullWidth
                 required
               />
+            </Grid>
+            <Grid item xs={12}>
+            <Button
+                variant="contained"
+                component="label"
+                sx={{ marginTop: 2, marginRight: 2 }}
+              >
+                Upload Images
+                <input type="file" hidden />
+              </Button>
             </Grid>
           </Grid>
           <Button
