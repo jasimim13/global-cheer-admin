@@ -1,7 +1,8 @@
 // src/pages/Sales.js
 import React, { useEffect } from 'react';
 import * as echarts from 'echarts';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Sales = () => {
   useEffect(() => {
@@ -83,8 +84,18 @@ const Sales = () => {
     };
   }, []);
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ backgroundColor: 'white', minHeight: '100vh', padding: '20px', fontFamily: 'TimesNewRoman' }}>
+       <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate('/')}
+      >
+        Go Back
+      </Button>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <img
           src="/images/Logo.jpeg"

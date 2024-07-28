@@ -12,8 +12,10 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  Button
 } from "@mui/material";
 import { Edit, Delete, Download } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const Users = () => {
   const users = [
@@ -38,8 +40,18 @@ const Users = () => {
     // Add more user data as needed
   ];
 
+  const navigate = useNavigate();
+
   return (
     <div style={{ padding: 10, fontFamily: 'TimesNewRoman' }}>
+       <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate('/')}
+      >
+        Go Back
+      </Button>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}} >
       <img
         src="/images/Logo.jpeg"
@@ -47,7 +59,16 @@ const Users = () => {
         style={{ height: "100px", width: "200px" }}
       />
       </div>
+      <div style={{ display: 'flex',  alignItems: 'center', justifyContent: 'space-between'}} >
       <p style={{textAlign: 'left', fontSize: '30px', fontWeight: 'bold' }} > Users </p>
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+      >
+        <Download/>
+      </Button>
+      </div>
 
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650,  fontFamily: 'TimesNewRoman'}} aria-label="users table">

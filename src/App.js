@@ -9,6 +9,8 @@ import Sales from "./pages/Sales/Sales";
 import QRCode from "./pages/QRCode/QRCode";
 import Home from "./pages/Home/Home";
 import Auth from "./pages/Auth/Auth";
+import Orders from "./pages/Orders/Orders";
+import UserManagement from "./pages/UserManagement/UserManagement";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/community" element={<Community />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/qrcode" element={<QRCode />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/usermanagement" element={<UserManagement />} />
         </Routes>
       </div>
     </Router>

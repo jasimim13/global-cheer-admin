@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   Button,
   TextField,
+  Modal,
   Grid,
   Card,
   CardContent,
@@ -18,44 +19,66 @@ import {
   InputLabel,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
-const dummyEvents = [
-  {
-    name: "Music Concert",
-    cover_image: "/images/concert.jpg",
-  },
-  {
-    name: "Art Exhibition",
-    cover_image: "/images/museum.jpg",
-  },
-  {
-    name: "Tech Conference",
-    cover_image: "/images/conference.jpg",
-  },
-];
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #ED1F24",
+  boxShadow: 24,
+  p: 4,
+};
 
 const Community = () => {
   const [isCommunityAllowed, setIsCommunityAllowed] = useState(false);
-  const [newPost, setNewPost] = useState("");
+  const [open, setOpen] = useState(false);
+  const [postTitle, setPostTitle] = useState("");
+  const [postImage, setPostImage] = useState(null);
   const [posts, setPosts] = useState([
-    { text: "Welcome to the community!", timestamp: new Date() },
-    { text: "First post!", timestamp: new Date() },
-    { text: "Excited for the upcoming event!", timestamp: new Date() },
+    {
+      title: "Welcome to the community!",
+      image: "/images/post.jpg",
+      timestamp: new Date(),
+    },
   ]);
   const [sortOrder, setSortOrder] = useState("newest");
+  const navigate = useNavigate();
 
   const handleSwitchChange = () => {
     setIsCommunityAllowed(!isCommunityAllowed);
   };
 
-  const handleNewPostChange = (e) => {
-    setNewPost(e.target.value);
+  const handleModalOpen = () => {
+    setOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setOpen(false);
+  };
+
+  const handlePostChange = (event) => {
+    setPostTitle(event.target.value);
+  };
+
+  const handleImageChange = (event) => {
+    setPostImage(event.target.files[0]);
   };
 
   const handleAddPost = () => {
-    if (newPost.trim() !== "") {
-      setPosts([{ text: newPost.trim(), timestamp: new Date() }, ...posts]);
-      setNewPost("");
+    if (postTitle.trim() !== "") {
+      const newPost = {
+        title: postTitle.trim(),
+        image: URL.createObjectURL(postImage),
+        timestamp: new Date(),
+      };
+      setPosts([newPost, ...posts]);
+      handleModalClose();
+      setPostTitle("");
+      setPostImage(null);
     }
   };
 
@@ -82,13 +105,16 @@ const Community = () => {
 
   return (
     <div
-      style={{
-        backgroundColor: "white",
-        minHeight: "100vh",
-        padding: "20px",
-        fontFamily: "TimesNewRoman",
-      }}
+      style={{ backgroundColor: "white", minHeight: "100vh", padding: "20px" }}
     >
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate("/")}
+      >
+        Go Back
+      </Button>
       <div
         style={{
           display: "flex",
@@ -100,11 +126,7 @@ const Community = () => {
         <img
           src="/images/Logo.jpeg"
           alt="Logo"
-          style={{
-            height: "100px",
-            objectFit: "cover",
-            backgroundPosition: "start",
-          }}
+          style={{ height: "100px", width: "200px" }}
         />
       </div>
       <Typography
@@ -129,73 +151,52 @@ const Community = () => {
       />
       {isCommunityAllowed && (
         <>
-          <Box sx={{ marginBottom: 5, textAlign: "center" }}>
-            <Typography variant="h5" component="h2" color="black">
-              Add New Post
-            </Typography>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <TextField
-                label="New Post"
-                value={newPost}
-                onChange={handleNewPostChange}
-                fullWidth
-              />
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleAddPost}
-                sx={{ backgroundColor: "#ED1F24", color: "white" }}
-              >
-                Add Post
-              </Button>
-            </div>
-          </Box>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "flex-end",
-            }}
-          >
-            <FormControl sx={{ marginBottom: 4 }}>
-              <InputLabel>Sort By</InputLabel>
-              <Select value={sortOrder} onChange={handleSortChange}>
-                <MenuItem value="newest">Newest</MenuItem>
-                <MenuItem value="oldest">Oldest</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <p style={{ fontSize: '30px' }} >Posts</p>
           <div
             style={{
               display: "flex",
               flexDirection: "row",
-              flexWrap: "wrap",
-              gap: 10,
+              justifyContent: "space-between",
             }}
           >
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleModalOpen}
+              sx={{
+                backgroundColor: "#ED1F24",
+                color: "white",
+              }}
+            >
+              Add New Post
+            </Button>
+            <div>
+              {/* <p>Sort By</p> */}
+              <FormControl>
+                {/* <InputLabel sx={{ marginBottom: '40px' }} >Sort By</InputLabel> */}
+                <Select value={sortOrder} onChange={handleSortChange}>
+                  <MenuItem value="newest">Newest</MenuItem>
+                  <MenuItem value="oldest">Oldest</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+          <Grid container spacing={2}>
             {posts.map((post, index) => (
-              <Grid item xs={12} key={index}>
+              <Grid item xs={12} sm={6} md={4} key={index}>
                 <Card>
                   <CardContent>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      style={{ fontFamily: "TimesNewRoman" }}
-                    >
-                      {post.text}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="textSecondary"
-                      style={{ fontFamily: "TimesNewRoman" }}
-                    >
+                    <Typography variant="h6">{post.title}</Typography>
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      style={{ width: "100%", height: "auto", marginTop: 10 }}
+                    />
+                    <Typography variant="caption" display="block">
                       {new Date(post.timestamp).toLocaleString()}
                     </Typography>
                   </CardContent>
                   <CardActions>
                     <IconButton
-                      color="primary"
                       onClick={() => handleDeletePost(index)}
                       sx={{ color: "#ED1F24" }}
                     >
@@ -205,7 +206,43 @@ const Community = () => {
                 </Card>
               </Grid>
             ))}
-          </div>
+          </Grid>
+
+          <Modal open={open} onClose={handleModalClose}>
+            <Box sx={modalStyle} component="form">
+              <Typography variant="h6" component="h2">
+                Add New Post
+              </Typography>
+              <TextField
+                label="Post Title"
+                fullWidth
+                margin="normal"
+                value={postTitle}
+                onChange={handlePostChange}
+              />
+              <Button
+                variant="contained"
+                component="label"
+                sx={{ marginTop: 2 }}
+              >
+                Upload Image
+                <input type="file" hidden onChange={handleImageChange} />
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="error"
+                onClick={handleAddPost}
+                sx={{
+                  backgroundColor: "#ED1F24",
+                  color: "white",
+                  marginTop: 2,
+                }}
+              >
+                Submit Post
+              </Button>
+            </Box>
+          </Modal>
         </>
       )}
     </div>

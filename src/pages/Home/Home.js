@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
 import { FaUser, FaCalendarAlt, FaTshirt, FaUsers, FaChartLine, FaQrcode } from 'react-icons/fa';
+import { GoPackageDependents } from "react-icons/go";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ const Home = () => {
     { title: 'Community', icon: <FaUsers size={50} />, description: 'Join the community', color: '#ff9800', path: '/community' },
     { title: 'Sales', icon: <FaChartLine size={50} />, description: 'Track sales', color: '#9c27b0', path: '/sales' },
     { title: 'QR Code', icon: <FaQrcode size={50} />, description: 'Scan QR codes', color: '#00bcd4', path: '/qrcode' },
+    { title: 'Orders', icon: <GoPackageDependents size={50} />, description: 'View Orders', color: '#00bcd4', path: '/orders' },
+    { title: 'User Managment', icon: <GoPackageDependents size={50} />, description: 'Manage Users', color: '#00bcd4', path: '/usermanagement' },
   ];
 
   return (

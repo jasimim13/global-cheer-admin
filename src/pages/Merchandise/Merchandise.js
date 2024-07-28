@@ -228,36 +228,38 @@ const Merchandise = () => {
         </Box>
       </Modal>
       <p style={{ fontSize: '30px', marginLeft: '10px', fontWeight: 'bold' }}>Your Merchandise</p>
-      <Grid container spacing={3} sx={{ paddingX: 10 }}>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', flexWrap: 'wrap', padding: '30px', justifyContent: 'center' }}>
         {dummyMerchandise.map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card>
+            <Card key={index} sx={{width: '450px'}} >
               <CardMedia
                 component="img"
-                height="140"
+                height="240"
                 image={item.image_url}
-                alt={item.name}
+                alt={item.name}s
               />
               <CardContent>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
                 <Typography gutterBottom variant="h5" component="div" style={{ fontFamily: 'TimesNewRoman' }}>
                   {item.name}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+                  Price: <span style={{ color: '#ED1F24', fontSize: '30px' }} >{item.price}</span>$
+                </Typography>
+                </div>
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
                   {item.description}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
                   Category: {item.category}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
                   Size: {item.size}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
                   Color: {item.color}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Price: ${item.price}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
+               
+                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
                   Stock: {item.stock}
                 </Typography>
               </CardContent>
@@ -273,9 +275,8 @@ const Merchandise = () => {
                 </IconButton>
               </CardActions>
             </Card>
-          </Grid>
         ))}
-      </Grid>
+      </div>
 
       <Modal open={viewOpen} onClose={handleViewClose}>
         <Box sx={modalStyle}>
