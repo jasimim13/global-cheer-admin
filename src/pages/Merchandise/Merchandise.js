@@ -1,5 +1,5 @@
 // src/pages/Merchandise.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Button,
   Modal,
@@ -12,17 +12,18 @@ import {
   CardMedia,
   CardActions,
   IconButton,
-} from '@mui/material';
-import { Delete, Edit, Info } from '@mui/icons-material';
+} from "@mui/material";
+import { Delete, Edit, Info } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #ED1F24',
+  bgcolor: "background.paper",
+  border: "2px solid #ED1F24",
   boxShadow: 24,
   p: 4,
 };
@@ -33,46 +34,46 @@ const Merchandise = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [selectedMerch, setSelectedMerch] = useState(null);
   const [merchData, setMerchData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    size: '',
-    color: '',
-    price: '',
-    image_url: '',
-    stock: '',
+    name: "",
+    description: "",
+    category: "",
+    size: "",
+    color: "",
+    price: "",
+    image_url: "",
+    stock: "",
   });
 
   const dummyMerchandise = [
     {
-      name: 'T-Shirt',
-      description: 'Comfortable cotton t-shirt',
-      category: 'Clothing',
-      size: 'M',
-      color: 'Blue',
-      price: '20',
-      image_url: '/images/t-shirt.jpg',
-      stock: '50',
+      name: "T-Shirt",
+      description: "Comfortable cotton t-shirt",
+      category: "Clothing",
+      size: "M",
+      color: "Blue",
+      price: "20",
+      image_url: "/images/t-shirt.jpg",
+      stock: "50",
     },
     {
-      name: 'Coffee Mug',
-      description: 'Ceramic mug with cool design',
-      category: 'Accessories',
-      size: 'One Size',
-      color: 'White',
-      price: '10',
-      image_url: '/images/Coffee-Mug.jpg',
-      stock: '100',
+      name: "Coffee Mug",
+      description: "Ceramic mug with cool design",
+      category: "Accessories",
+      size: "One Size",
+      color: "White",
+      price: "10",
+      image_url: "/images/Coffee-Mug.jpg",
+      stock: "100",
     },
     {
-      name: 'Laptop Sleeve',
-      description: 'Protective sleeve for laptops',
-      category: 'Accessories',
-      size: '15 inch',
-      color: 'Black',
-      price: '25',
-      image_url: '/images/sleeve.jpg',
-      stock: '30',
+      name: "Laptop Sleeve",
+      description: "Protective sleeve for laptops",
+      category: "Accessories",
+      size: "15 inch",
+      color: "Black",
+      price: "25",
+      image_url: "/images/sleeve.jpg",
+      stock: "30",
     },
   ];
 
@@ -109,7 +110,9 @@ const Merchandise = () => {
   const handleEditClose = () => setEditOpen(false);
 
   const handleDelete = (merch) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this merchandise?');
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this merchandise?"
+    );
     if (confirmDelete) {
       console.log(`Deleting merchandise: ${merch.name}`);
     }
@@ -121,18 +124,57 @@ const Merchandise = () => {
     handleEditClose();
   };
 
+  const navigate = useNavigate();
   return (
-    <div style={{ fontFamily: 'TimesNewRoman' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ padding: "10px", fontFamily: "TimesNewRoman" }}>
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate("/")}
+      >
+        Go Back
+      </Button>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <img
           src="/images/Logo.jpeg"
           alt="Logo"
-          style={{ height: "100px", objectFit: 'cover', backgroundPosition: 'start' }}
+          style={{
+            height: "100px",
+            objectFit: "cover",
+            backgroundPosition: "start",
+          }}
         />
       </div>
-      <Button variant="contained" color="error" onClick={handleOpen} sx={{ backgroundColor: '#ED1F24', color: 'white', alignSelf: 'flex-end' }}>
-        Add Merchandise
-      </Button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <p style={{ fontSize: "30px", marginLeft: "10px", fontWeight: "bold" }}>
+          Your Merchandise
+        </p>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleOpen}
+          sx={{
+            backgroundColor: "#ED1F24",
+            color: "white",
+          }}
+        >
+          Add Merchandise
+        </Button>
+      </div>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle} component="form" onSubmit={handleSubmit}>
           <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
@@ -222,59 +264,126 @@ const Merchandise = () => {
               />
             </Grid>
           </Grid>
-          <Button type="submit" variant="contained" color="error" sx={{ backgroundColor: '#ED1F24', color: 'white', marginTop: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="error"
+            sx={{ backgroundColor: "#ED1F24", color: "white", marginTop: 2 }}
+          >
             Submit
           </Button>
         </Box>
       </Modal>
-      <p style={{ fontSize: '30px', marginLeft: '10px', fontWeight: 'bold' }}>Your Merchandise</p>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '30px', flexWrap: 'wrap', padding: '30px', justifyContent: 'center' }}>
+
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "30px",
+          flexWrap: "wrap",
+          padding: "30px",
+          justifyContent: "center",
+        }}
+      >
         {dummyMerchandise.map((item, index) => (
-            <Card key={index} sx={{width: '450px'}} >
-              <CardMedia
-                component="img"
-                height="240"
-                image={item.image_url}
-                alt={item.name}s
-              />
-              <CardContent>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
-                <Typography gutterBottom variant="h5" component="div" style={{ fontFamily: 'TimesNewRoman' }}>
+          <Card key={index} sx={{ width: "450px" }}>
+            <CardMedia
+              component="img"
+              height="240"
+              image={item.image_url}
+              alt={item.name}
+              s
+            />
+            <CardContent>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  style={{ fontFamily: "TimesNewRoman" }}
+                >
                   {item.name}
                 </Typography>
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Price: <span style={{ color: '#ED1F24', fontSize: '30px' }} >{item.price}</span>$
+                <Typography
+                  variant="h6"
+                  color="textSecondary"
+                  style={{ fontFamily: "TimesNewRoman" }}
+                >
+                  Price:{" "}
+                  <span style={{ color: "#ED1F24", fontSize: "30px" }}>
+                    {item.price}
+                  </span>
+                  $
                 </Typography>
-                </div>
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  {item.description}
-                </Typography>
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Category: {item.category}
-                </Typography>
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Size: {item.size}
-                </Typography>
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Color: {item.color}
-                </Typography>
-               
-                <Typography variant="h6" color="textSecondary" style={{ fontFamily: 'TimesNewRoman' }}>
-                  Stock: {item.stock}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" color="primary" onClick={() => handleViewOpen(item)} sx={{ color: '#ED1F24', fontFamily: 'TimesNewRoman' }}>
-                  View Details
-                </Button>
-                <IconButton color="primary" onClick={() => handleEditOpen(item)} sx={{ color: '#ED1F24' }}>
-                  <Edit />
-                </IconButton>
-                <IconButton color="primary" onClick={() => handleDelete(item)} sx={{ color: '#ED1F24' }}>
-                  <Delete />
-                </IconButton>
-              </CardActions>
-            </Card>
+              </div>
+              <Typography
+                variant="h6"
+                color="textSecondary"
+                style={{ fontFamily: "TimesNewRoman" }}
+              >
+                {item.description}
+              </Typography>
+              <Typography
+                variant="h6"
+                color="textSecondary"
+                style={{ fontFamily: "TimesNewRoman" }}
+              >
+                Category: {item.category}
+              </Typography>
+              <Typography
+                variant="h6"
+                color="textSecondary"
+                style={{ fontFamily: "TimesNewRoman" }}
+              >
+                Size: {item.size}
+              </Typography>
+              <Typography
+                variant="h6"
+                color="textSecondary"
+                style={{ fontFamily: "TimesNewRoman" }}
+              >
+                Color: {item.color}
+              </Typography>
+
+              <Typography
+                variant="h6"
+                color="textSecondary"
+                style={{ fontFamily: "TimesNewRoman" }}
+              >
+                Stock: {item.stock}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color="primary"
+                onClick={() => handleViewOpen(item)}
+                sx={{ color: "#ED1F24", fontFamily: "TimesNewRoman" }}
+              >
+                View Details
+              </Button>
+              <IconButton
+                color="primary"
+                onClick={() => handleEditOpen(item)}
+                sx={{ color: "#ED1F24" }}
+              >
+                <Edit />
+              </IconButton>
+              <IconButton
+                color="primary"
+                onClick={() => handleDelete(item)}
+                sx={{ color: "#ED1F24" }}
+              >
+                <Delete />
+              </IconButton>
+            </CardActions>
+          </Card>
         ))}
       </div>
 
@@ -303,7 +412,11 @@ const Merchandise = () => {
               <Typography variant="body2" color="textSecondary">
                 Stock: {selectedMerch.stock}
               </Typography>
-              <img src={selectedMerch.image_url} alt={selectedMerch.name} style={{ width: '100%', marginTop: 10 }} />
+              <img
+                src={selectedMerch.image_url}
+                alt={selectedMerch.name}
+                style={{ width: "100%", marginTop: 10 }}
+              />
             </>
           )}
         </Box>
@@ -398,7 +511,12 @@ const Merchandise = () => {
               />
             </Grid>
           </Grid>
-          <Button type="submit" variant="contained" color="error" sx={{ backgroundColor: '#ED1F24', color: 'white', marginTop: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="error"
+            sx={{ backgroundColor: "#ED1F24", color: "white", marginTop: 2 }}
+          >
             Submit
           </Button>
         </Box>

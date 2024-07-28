@@ -21,6 +21,7 @@ import {
   AttachMoney,
   ConfirmationNumber,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
   position: "absolute",
@@ -45,6 +46,7 @@ const Events = () => {
     total_tickets: "",
     cover_image: "",
   });
+  const navigate= useNavigate()
 
   const dummyEvents = [
     {
@@ -104,7 +106,15 @@ const Events = () => {
   };
 
   return (
-    <div style={{ fontFamily: "TimesNewRoman" }}>
+    <div style={{ fontFamily: "TimesNewRoman", padding: '10px' }}>
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate("/")}
+      >
+        Go Back
+      </Button>
       <div
         style={{
           display: "flex",

@@ -16,7 +16,7 @@ const Home = () => {
     { title: 'Sales', icon: <FaChartLine size={50} />, description: 'Track sales', color: '#9c27b0', path: '/sales' },
     { title: 'QR Code', icon: <FaQrcode size={50} />, description: 'Scan QR codes', color: '#00bcd4', path: '/qrcode' },
     { title: 'Orders', icon: <GoPackageDependents size={50} />, description: 'View Orders', color: '#00bcd4', path: '/orders' },
-    { title: 'User Managment', icon: <GoPackageDependents size={50} />, description: 'Manage Users', color: '#00bcd4', path: '/usermanagement' },
+    // { title: 'User Managment', icon: <GoPackageDependents size={50} />, description: 'Manage Users', color: '#00bcd4', path: '/usermanagement' },
   ];
 
   return (
