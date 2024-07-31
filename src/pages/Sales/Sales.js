@@ -6,81 +6,179 @@ import { useNavigate } from 'react-router-dom';
 
 const Sales = () => {
   useEffect(() => {
-    const merchandiseChart = echarts.init(document.getElementById('merchandise-chart'));
-    const eventChart = echarts.init(document.getElementById('event-chart'));
+    const onlineSalesChart = echarts.init(document.getElementById('online-sales-chart'));
+    const inStoreSalesChart = echarts.init(document.getElementById('instore-sales-chart'));
 
-    const merchandiseSalesData = {
+    const dates = ['2024-07-01', '2024-07-02', '2024-07-03', '2024-07-04', '2024-07-05', '2024-07-06', '2024-07-07'];
+
+    const onlineSalesData = {
+      title: {
+        text: 'Online Sales Data'
+      },
       tooltip: {
         trigger: 'axis',
-      },
-      xAxis: {
-        type: 'category',
-        data: ['T-Shirt', 'Coffee Mug', 'Laptop Sleeve'],
-        axisLabel: {
-          color: 'black',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985'
+          }
         },
+        formatter: function(params) {
+          const date = params[0].axisValue;
+          let tooltipContent = `<div>${date}</div>`;
+          params.forEach(param => {
+            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data}</div>`;
+          });
+          return tooltipContent;
+        }
       },
-      yAxis: {
-        type: 'value',
-        axisLabel: {
-          color: 'black',
-        },
+      legend: {
+        data: ['T-Shirt', 'Coffee Mug', 'Laptop Sleeve']
       },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          boundaryGap: false,
+          data: dates
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
       series: [
         {
-          data: [120, 200, 150],
+          name: 'T-Shirt',
           type: 'line',
-          smooth: true,
-          itemStyle: {
-            color: '#ED1F24',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
           },
-          lineStyle: {
-            width: 3,
-          },
-          areaStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: 'rgba(237, 31, 36, 0.5)' },
-              { offset: 1, color: 'rgba(237, 31, 36, 0)' },
-            ]),
-          },
+          data: [50, 60, 70, 80, 90, 100, 110]
         },
-      ],
+        {
+          name: 'Coffee Mug',
+          type: 'line',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
+          },
+          data: [30, 40, 50, 60, 70, 80, 90]
+        },
+        {
+          name: 'Laptop Sleeve',
+          type: 'line',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
+          },
+          data: [20, 30, 40, 50, 60, 70, 80]
+        }
+      ]
     };
 
-    const eventSalesData = {
+    const inStoreSalesData = {
+      title: {
+        text: 'In-Store Sales Data'
+      },
       tooltip: {
         trigger: 'axis',
-      },
-      xAxis: {
-        type: 'category',
-        data: ['Music Concert', 'Art Exhibition', 'Tech Conference'],
-        axisLabel: {
-          color: 'black',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985'
+          }
         },
+        formatter: function(params) {
+          const date = params[0].axisValue;
+          let tooltipContent = `<div>${date}</div>`;
+          params.forEach(param => {
+            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data}</div>`;
+          });
+          return tooltipContent;
+        }
       },
-      yAxis: {
-        type: 'value',
-        axisLabel: {
-          color: 'black',
-        },
+      legend: {
+        data: ['T-Shirt', 'Coffee Mug', 'Laptop Sleeve']
       },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis: [
+        {
+          type: 'category',
+          boundaryGap: false,
+          data: dates
+        }
+      ],
+      yAxis: [
+        {
+          type: 'value'
+        }
+      ],
       series: [
         {
-          data: [300, 180, 250],
-          type: 'bar',
-          itemStyle: {
-            color: '#ED1F24',
+          name: 'T-Shirt',
+          type: 'line',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
           },
+          data: [20, 30, 40, 50, 60, 70, 80]
         },
-      ],
+        {
+          name: 'Coffee Mug',
+          type: 'line',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
+          },
+          data: [10, 20, 30, 40, 50, 60, 70]
+        },
+        {
+          name: 'Laptop Sleeve',
+          type: 'line',
+          stack: 'Total',
+          areaStyle: {},
+          emphasis: {
+            focus: 'series'
+          },
+          data: [5, 10, 15, 20, 25, 30, 35]
+        }
+      ]
     };
 
-    merchandiseChart.setOption(merchandiseSalesData);
-    eventChart.setOption(eventSalesData);
+    onlineSalesChart.setOption(onlineSalesData);
+    inStoreSalesChart.setOption(inStoreSalesData);
 
     return () => {
-      merchandiseChart.dispose();
-      eventChart.dispose();
+      onlineSalesChart.dispose();
+      inStoreSalesChart.dispose();
     };
   }, []);
 
@@ -110,17 +208,17 @@ const Sales = () => {
         <Grid item xs={12} md={6}>
           <Box>
             <Typography variant="h5" component="h2" align="center" color="black" fontFamily={'TimesNewRoman'} >
-              Merchandise Sales
+              Online Sales
             </Typography>
-            <div id="merchandise-chart" style={{ height: '400px', width: '100%' }}></div>
+            <div id="online-sales-chart" style={{ height: '400px', width: '100%' }}></div>
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
           <Box>
             <Typography variant="h5" component="h2" align="center" color="black" fontFamily={'TimesNewRoman'} >
-              Event Ticket Sales
+              In-Store Sales
             </Typography>
-            <div id="event-chart" style={{ height: '400px', width: '100%' }}></div>
+            <div id="instore-sales-chart" style={{ height: '400px', width: '100%' }}></div>
           </Box>
         </Grid>
       </Grid>

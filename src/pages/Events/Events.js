@@ -1,4 +1,3 @@
-// src/pages/Events.js
 import React, { useState } from "react";
 import {
   Button,
@@ -7,13 +6,10 @@ import {
   TextField,
   Typography,
   Grid,
-  Paper,
   Card,
   CardContent,
   CardMedia,
   CardActions,
-  IconButton,
-  Input
 } from "@mui/material";
 import {
   LocationOn,
@@ -22,6 +18,9 @@ import {
   ConfirmationNumber,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const modalStyle = {
   position: "absolute",
@@ -46,7 +45,9 @@ const Events = () => {
     total_tickets: "",
     cover_image: "",
   });
-  const navigate= useNavigate()
+  const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]);
+
+  const navigate = useNavigate();
 
   const dummyEvents = [
     {
@@ -94,19 +95,35 @@ const Events = () => {
     if (file) {
       setEventData((prevData) => ({
         ...prevData,
-        cover_image: URL.createObjectURL(file)
+        cover_image: URL.createObjectURL(file),
       }));
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(eventData);
+    setEventData((prevData) => ({
+      ...prevData,
+      location: `Latitude: ${markerPosition[0]}, Longitude: ${markerPosition[1]}`,
+    }));
     handleClose();
   };
 
+  const LocationMarker = () => {
+    useMapEvents({
+      click(e) {
+        setMarkerPosition([e.latlng.lat, e.latlng.lng]);
+      },
+    });
+
+    return markerPosition === null ? null : (
+      <Marker position={markerPosition} icon={new L.Icon({ iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" })}>
+      </Marker>
+    );
+  };
+
   return (
-    <div style={{ fontFamily: "TimesNewRoman", padding: '10px' }}>
+    <div style={{ fontFamily: "TimesNewRoman", padding: "10px" }}>
       <Button
         variant="contained"
         color="error"
@@ -134,12 +151,10 @@ const Events = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: '10px'
+          padding: "10px",
         }}
       >
-        <p style={{ fontSize: "30px",fontWeight: "bold" }}>
-          Your Events
-        </p>
+        <p style={{ fontSize: "30px", fontWeight: "bold" }}>Your Events</p>
         <Button
           variant="contained"
           color="error"
@@ -176,7 +191,20 @@ const Events = () => {
                 onChange={handleChange}
                 fullWidth
                 required
+                InputProps={{ readOnly: true }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <MapContainer
+                center={markerPosition}
+                zoom={13}
+                style={{ height: "200px", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <LocationMarker />
+              </MapContainer>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -225,7 +253,7 @@ const Events = () => {
               />
             </Grid>
             <Grid item xs={12}>
-            <Button
+              <Button
                 variant="contained"
                 component="label"
                 sx={{ marginTop: 2, marginRight: 2 }}

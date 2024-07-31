@@ -1,4 +1,3 @@
-// src/pages/Merchandise.js
 import React, { useState } from "react";
 import {
   Button,
@@ -12,8 +11,10 @@ import {
   CardMedia,
   CardActions,
   IconButton,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { Delete, Edit, Info } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
@@ -217,14 +218,27 @@ const Merchandise = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <Typography
+                  variant="h6"
+                  color="textSecondary"
+                  style={{ fontFamily: "TimesNewRoman" }}
+                >
+                  Size
+                </Typography>
+              <Select
                 label="Size"
                 name="size"
                 value={merchData.size}
                 onChange={handleChange}
                 fullWidth
                 required
-              />
+              >
+                <MenuItem value="S">Small</MenuItem>
+                <MenuItem value="M">Medium</MenuItem>
+                <MenuItem value="L">Large</MenuItem>
+                <MenuItem value="One Size">One Size</MenuItem>
+                <MenuItem value="15 inch">15 inch</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -248,18 +262,29 @@ const Merchandise = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <Typography
+                  variant="h6"
+                  color="textSecondary"
+                  style={{ fontFamily: "TimesNewRoman" }}
+                >
+                  Stock
+                </Typography>
+              <Select
                 label="Stock"
                 name="stock"
-                type="number"
                 value={merchData.stock}
                 onChange={handleChange}
                 fullWidth
                 required
-              />
+              >
+                <MenuItem value="50">50</MenuItem>
+                <MenuItem value="100">100</MenuItem>
+                <MenuItem value="150">150</MenuItem>
+                <MenuItem value="200">200</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12}>
-            <Button
+              <Button
                 variant="contained"
                 component="label"
                 sx={{ marginTop: 2, marginRight: 2 }}
@@ -297,7 +322,6 @@ const Merchandise = () => {
               height="240"
               image={item.image_url}
               alt={item.name}
-              s
             />
             <CardContent>
               <div
@@ -464,14 +488,21 @@ const Merchandise = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+            <Typography> Size </Typography>
+              <Select
                 label="Size"
                 name="size"
                 value={merchData.size}
                 onChange={handleChange}
                 fullWidth
                 required
-              />
+              >
+                <MenuItem value="S">Small</MenuItem>
+                <MenuItem value="M">Medium</MenuItem>
+                <MenuItem value="L">Large</MenuItem>
+                <MenuItem value="One Size">One Size</MenuItem>
+                <MenuItem value="15 inch">15 inch</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -495,24 +526,29 @@ const Merchandise = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField
+              <Typography> Stock </Typography>
+              <Select
                 label="Stock"
                 name="stock"
-                type="number"
                 value={merchData.stock}
                 onChange={handleChange}
                 fullWidth
                 required
-              />
+              >
+                <MenuItem value="50">50</MenuItem>
+                <MenuItem value="100">100</MenuItem>
+                <MenuItem value="150">150</MenuItem>
+                <MenuItem value="200">200</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={12}>
-            <Button
+              <Button
                 variant="contained"
                 component="label"
                 sx={{ marginTop: 2, marginRight: 2 }}
               >
                 Upload Images
-                <input type="file" hidden />
+                <input type="file" hidden onChange={handleImageChange} />
               </Button>
             </Grid>
           </Grid>

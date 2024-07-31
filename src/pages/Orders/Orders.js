@@ -1,4 +1,3 @@
-// src/pages/Orders.js
 import React, { useState } from "react";
 import {
   Box,
@@ -6,13 +5,17 @@ import {
   Tab,
   Tabs,
   Button,
-  TextField,
   Grid,
   Card,
   CardContent,
   Modal,
   AppBar,
+  Chip,
+  Toolbar,
+  IconButton,
+  Container,
 } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const modalStyle = {
@@ -25,6 +28,22 @@ const modalStyle = {
   border: "2px solid #ED1F24",
   boxShadow: 24,
   p: 4,
+  borderRadius: 2,
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "Pending":
+      return "orange";
+    case "Delivered":
+      return "green";
+    case "Accepted":
+      return "blue";
+    case "Declined":
+      return "red";
+    default:
+      return "gray";
+  }
 };
 
 const dummyOrders = [
@@ -96,129 +115,186 @@ const Orders = () => {
   };
 
   return (
-    <Box sx={{ width: "100%", padding: '10px', typography: "body1" }}>
-        <Button
-        variant="contained"
-        color="error"
-        sx={{ backgroundColor: "#ED1F24", color: "white" }}
-        onClick={() => navigate('/')}
-      >
-        Go Back
-      </Button>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src="/images/Logo.jpeg"
-          alt="Logo"
-          style={{ height: "100px", width: "200px", marginBottom: "10px" }}
-        />
-      </div>
-      <AppBar position="static" color="default">
-        <Tabs
-          value={selectedTab}
-          onChange={handleChange}
-          aria-label="order tabs"
-          indicatorColor="secondary"
-          textColor="inherit"
-        >
-          <Tab label="All Orders" value="1" />
-          <Tab label="Pending" value="2" />
-        </Tabs>
+    <Box sx={{ width: "100%", padding: "20px", typography: "body1" }}>
+      <AppBar position="static" color="default" elevation={1}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={() => navigate("/")}
+          >
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
+            Orders
+          </Typography>
+        </Toolbar>
       </AppBar>
-      <TabPanel value={selectedTab} index="1">
-        <Grid container spacing={2}>
-          {dummyOrders.map((order) => (
-            <Grid item xs={12} md={4} key={order.id}>
-              <Card sx={{ padding: "20px" }}>
-                <CardContent>
-                  <Typography variant="h5">{order.name}</Typography>
-                  <Typography>Items: {order.items}</Typography>
-                  <Typography>Status: {order.status}</Typography>
-                </CardContent>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <Button
-                    onClick={() => handleOpenModal(order)}
-                    sx={{
-                      backgroundColor: "#ED1F24",
-                      color: "white",
-                    }}
-        
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </TabPanel>
-      <TabPanel value={selectedTab} index="2">
-        <Grid container spacing={2}>
-          {dummyOrders
-            .filter((order) => order.status === "Pending")
-            .map((order) => (
+      <Container>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
+          <img
+            src="/images/Logo.jpeg"
+            alt="Logo"
+            style={{ height: "100px", width: "200px", marginBottom: "20px" }}
+          />
+        </Box>
+        <AppBar position="static" color="default">
+          <Tabs
+            value={selectedTab}
+            onChange={handleChange}
+            aria-label="order tabs"
+            indicatorColor="secondary"
+            textColor="inherit"
+            variant="fullWidth"
+          >
+            <Tab label="All Orders" value="1" />
+            <Tab label="Pending" value="2" />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={selectedTab} index="1">
+          <Grid container spacing={3}>
+            {dummyOrders.map((order) => (
               <Grid item xs={12} md={4} key={order.id}>
-                <Card
-                  onClick={() => handleOpenModal(order)}
-                  sx={{ cursor: "pointer" }}
-                >
+                <Card sx={{ padding: "20px", borderRadius: 2 }}>
                   <CardContent>
-                    <Typography variant="h5">{order.name}</Typography>
+                    <Typography variant="h6" gutterBottom>
+                      {order.name}
+                    </Typography>
                     <Typography>Items: {order.items}</Typography>
-                    <Typography>Status: {order.status}</Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography>Status:</Typography>
+                      <Chip
+                        label={order.status}
+                        sx={{
+                          backgroundColor: getStatusColor(order.status),
+                          color: "white",
+                        }}
+                      />
+                    </Box>
                   </CardContent>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#ED1F24",
+                        color: "white",
+                        marginTop: 2,
+                      }}
+                      onClick={() => handleOpenModal(order)}
+                    >
+                      View Details
+                    </Button>
+                  </Box>
                 </Card>
               </Grid>
             ))}
-        </Grid>
-      </TabPanel>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={selectedTab} index="2">
+          <Grid container spacing={3}>
+            {dummyOrders
+              .filter((order) => order.status === "Pending")
+              .map((order) => (
+                <Grid item xs={12} md={4} key={order.id}>
+                  <Card sx={{ padding: "20px", borderRadius: 2 }}>
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        {order.name}
+                      </Typography>
+                      <Typography>Items: {order.items}</Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Typography>Status:</Typography>
+                        <Chip
+                          label={order.status}
+                          sx={{
+                            backgroundColor: getStatusColor(order.status),
+                            color: "white",
+                          }}
+                        />
+                      </Box>
+                    </CardContent>
+                    <Box sx={{ textAlign: "right" }}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#ED1F24",
+                          color: "white",
+                          marginTop: 2,
+                        }}
+                        onClick={() => handleOpenModal(order)}
+                      >
+                        View Details
+                      </Button>
+                    </Box>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
+        </TabPanel>
 
-      <Modal open={openModal} onClose={handleCloseModal}>
-        <Box sx={modalStyle}>
-          {currentOrder && (
-            <>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Order ID: {currentOrder.id}
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Name: {currentOrder.name}
-              </Typography>
-              <Typography>Items: {currentOrder.items}</Typography>
-              <Typography>Status: {currentOrder.status}</Typography>
-              <Button
-                onClick={() => handleStatusChange("Accepted")}
-                color="primary"
-              >
-                Accept
-              </Button>
-              <Button
-                onClick={() => handleStatusChange("Declined")}
-                color="error"
-              >
-                Decline
-              </Button>
-              <Button
-                onClick={() => handleStatusChange("Delivered")}
-                color="success"
-              >
-                Deliver
-              </Button>
-            </>
-          )}
-        </Box>
-      </Modal>
+        <Modal open={openModal} onClose={handleCloseModal}>
+          <Box sx={modalStyle}>
+            {currentOrder && (
+              <>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Order ID: {currentOrder.id}
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  Name: {currentOrder.name}
+                </Typography>
+                <Typography>Items: {currentOrder.items}</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
+                  <Typography>Status:</Typography>
+                  <Chip
+                    label={currentOrder.status}
+                    sx={{
+                      backgroundColor: getStatusColor(currentOrder.status),
+                      color: "white",
+                    }}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: 4,
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => handleStatusChange("Accepted")}
+                    sx={{ backgroundColor: "blue", color: "white" }}
+                  >
+                    Accept
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleStatusChange("Declined")}
+                    sx={{ backgroundColor: "red", color: "white" }}
+                  >
+                    Decline
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleStatusChange("Delivered")}
+                    sx={{ backgroundColor: "green", color: "white" }}
+                  >
+                    Deliver
+                  </Button>
+                </Box>
+              </>
+            )}
+          </Box>
+        </Modal>
+      </Container>
     </Box>
   );
 };
