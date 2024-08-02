@@ -334,6 +334,12 @@ const Events = () => {
                 >
                   Learn More
                 </Button>
+                <Button
+                  size="small"
+                  sx={{ backgroundColor: "#F5F567", fontFamily: "TimesNewRoman" }}
+                >
+                  Pause Event
+                </Button>
               </CardActions>
             </Card>
           </Grid>

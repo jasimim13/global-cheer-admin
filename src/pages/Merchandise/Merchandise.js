@@ -25,7 +25,11 @@ const Merchandise = () => {
       <Button
         variant="contained"
         color="error"
-        sx={{ backgroundColor: "#ED1F24", color: "white", marginBottom: "20px" }}
+        sx={{
+          backgroundColor: "#ED1F24",
+          color: "white",
+          marginBottom: "20px",
+        }}
         onClick={() => navigate("/")}
       >
         Go Back
@@ -57,7 +61,10 @@ const Merchandise = () => {
           marginBottom: "20px",
         }}
       >
-        <Typography variant="h4" sx={{ marginLeft: "10px", fontWeight: "bold" }}>
+        <Typography
+          variant="h4"
+          sx={{ marginLeft: "10px", fontWeight: "bold" }}
+        >
           Your Merchandise
         </Typography>
         <Button
@@ -118,26 +125,39 @@ const Merchandise = () => {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
+                  onClick={() =>
+                    navigate(`/category/${category.name.toLowerCase()}`)
+                  }
                   sx={{ color: "#ED1F24" }}
                 >
                   View Details
                 </Button>
                 <div>
-                  <IconButton
+                  {/* <IconButton
                     color="primary"
                     onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
                     sx={{ color: "#ED1F24" }}
                   >
                     <Info />
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton
                     color="primary"
-                    onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
+                    onClick={() =>
+                      navigate(`/category/${category.name.toLowerCase()}`)
+                    }
                     sx={{ color: "#ED1F24" }}
                   >
                     <ArrowForward />
                   </IconButton>
+                  <Button
+                    size="small"
+                    sx={{
+                      backgroundColor: "#F5F567",
+                      fontFamily: "TimesNewRoman",
+                    }}
+                  >
+                    Pause Event
+                  </Button>
                 </div>
               </CardActions>
             </Card>
