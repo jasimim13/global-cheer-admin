@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
   CardContent,
   Typography,
   CardActions,
-  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { ArrowForward, Info } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
 const modalStyle = {
@@ -30,28 +33,53 @@ const modalStyle = {
 
 const Merchandise = () => {
   const navigate = useNavigate();
-  const [pauseModalOpen, setPauseModalOpen] = useState(false); // New state for pause confirmation modal
-  // Existing state and functions ...
+  const [pauseModalOpen, setPauseModalOpen] = useState(false);
+  const [lowStockItems, setLowStockItems] = useState([]);
+  const [currentMerchIndex, setCurrentMerchIndex] = useState(null);
+  const [filter, setFilter] = useState("all");
 
-  const handleOpenPauseModal = () => {
+  const [merchandiseCategories, setMerchandiseCategories] = useState([
+    { name: "Shirt", image: "/images/t-shirt.jpg", stock: 8, paused: false },
+    { name: "Mug", image: "/images/Coffee-Mug.jpg", stock: 15, paused: false },
+    { name: "Laptop Sleeve", image: "/images/sleeve.jpg", stock: 9, paused: false },
+  ]);
+
+  const handleOpenPauseModal = (index) => {
+    setCurrentMerchIndex(index);
     setPauseModalOpen(true);
   };
 
   const handleClosePauseModal = () => {
     setPauseModalOpen(false);
+    setCurrentMerchIndex(null);
   };
 
-  const handlePauseEvent = () => {
-    // Implement the pause logic here
-    console.log("Event paused!");
+  const handleTogglePauseMerch = () => {
+    setMerchandiseCategories((prevMerchandise) => {
+      const newMerchandise = [...prevMerchandise];
+      newMerchandise[currentMerchIndex].paused = !newMerchandise[currentMerchIndex].paused;
+      return newMerchandise;
+    });
     handleClosePauseModal();
   };
 
-  const merchandiseCategories = [
-    { name: "Shirt", image: "/images/t-shirt.jpg" },
-    { name: "Mug", image: "/images/Coffee-Mug.jpg" },
-    { name: "Laptop Sleeve", image: "/images/sleeve.jpg" },
-  ];
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  useEffect(() => {
+    const lowStock = merchandiseCategories.filter(
+      (category) => category.stock < 10
+    );
+    setLowStockItems(lowStock);
+  }, [merchandiseCategories]);
+
+  const filteredMerchandise = merchandiseCategories.filter((category) => {
+    if (filter === "all") return true;
+    if (filter === "paused") return category.paused;
+    if (filter === "active") return !category.paused;
+    return true;
+  });
 
   return (
     <div style={{ padding: "10px", fontFamily: "TimesNewRoman" }}>
@@ -68,21 +96,36 @@ const Merchandise = () => {
         Go Back
       </Button>
       <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
-        <DialogTitle>{"Pause Merchandise"}</DialogTitle>
+        <DialogTitle>
+          {merchandiseCategories[currentMerchIndex]?.paused ? "Resume Merchandise" : "Pause Merchandise"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to pause this Merchandise?
+            {merchandiseCategories[currentMerchIndex]?.paused
+              ? "Are you sure you want to resume this merchandise?"
+              : "Are you sure you want to pause this merchandise?"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClosePauseModal} color="primary">
             Cancel
           </Button>
-          <Button onClick={handlePauseEvent} color="primary" autoFocus>
+          <Button onClick={handleTogglePauseMerch} color="primary" autoFocus>
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
+      {lowStockItems.length > 0 && (
+        <Alert severity="warning" sx={{ marginBottom: "20px" }}>
+          The following items have stock lower than 10:{" "}
+          {lowStockItems.map((item, index) => (
+            <span key={item.name}>
+              {item.name}
+              {index < lowStockItems.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </Alert>
+      )}
       <div
         style={{
           display: "flex",
@@ -128,6 +171,16 @@ const Merchandise = () => {
           Add Merchandise
         </Button>
       </div>
+      <div style={{ padding: "10px" }}>
+        <InputLabel>Filter Merchandise</InputLabel>
+        <FormControl fullWidth>
+          <Select value={filter} onChange={handleFilterChange}>
+            <MenuItem value="all">All Merchandise</MenuItem>
+            <MenuItem value="paused">Paused Merchandise</MenuItem>
+            <MenuItem value="active">Active Merchandise</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
       <div
         style={{
           display: "flex",
@@ -135,10 +188,9 @@ const Merchandise = () => {
           gap: "30px",
           flexWrap: "wrap",
           padding: "30px",
-          // justifyContent: "center",
         }}
       >
-        {merchandiseCategories.map((category) => (
+        {filteredMerchandise.map((category, index) => (
           <motion.div
             key={category.name}
             whileHover={{ scale: 1.05 }}
@@ -171,7 +223,7 @@ const Merchandise = () => {
                 </Typography>
               </CardContent>
               <CardActions style={{ justifyContent: "space-between" }}>
-                <div style={{display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'flex-end', width:'100%'}} >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'flex-end', width: '100%' }}>
                   <Button
                     size="small"
                     onClick={() =>
@@ -186,9 +238,9 @@ const Merchandise = () => {
                     size="small"
                     variant="contained"
                     style={{ backgroundColor: "#FFEB3B", color: "#000" }}
-                    onClick={handleOpenPauseModal}
+                    onClick={() => handleOpenPauseModal(index)}
                   >
-                    Pause Merchandse
+                    {category.paused ? "Resume Merchandise" : "Pause Merchandise"}
                   </Button>
                 </div>
               </CardActions>

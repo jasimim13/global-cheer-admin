@@ -15,7 +15,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   LocationOn,
@@ -52,27 +55,10 @@ const Events = () => {
     cover_image: "",
   });
   const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]);
-  const [pauseModalOpen, setPauseModalOpen] = useState(false); // New state for pause confirmation modal
-  // Existing state and functions ...
-
-  const handleOpenPauseModal = () => {
-    setPauseModalOpen(true);
-  };
-
-  const handleClosePauseModal = () => {
-    setPauseModalOpen(false);
-  };
-
-  const handlePauseEvent = () => {
-    // Implement the pause logic here
-    console.log("Event paused!");
-    handleClosePauseModal();
-  };
-
-
-  const navigate = useNavigate();
-
-  const dummyEvents = [
+  const [pauseModalOpen, setPauseModalOpen] = useState(false);
+  const [currentEventIndex, setCurrentEventIndex] = useState(null);
+  const [filter, setFilter] = useState("all"); // New state for filter option
+  const [events, setEvents] = useState([
     {
       name: "Music Concert",
       location: "New York",
@@ -81,6 +67,7 @@ const Events = () => {
       ticket_price: "50",
       total_tickets: "200",
       cover_image: "/images/concert.jpg",
+      paused: false,
     },
     {
       name: "Art Exhibition",
@@ -90,6 +77,7 @@ const Events = () => {
       ticket_price: "30",
       total_tickets: "100",
       cover_image: "/images/museum.jpg",
+      paused: false,
     },
     {
       name: "Tech Conference",
@@ -99,8 +87,11 @@ const Events = () => {
       ticket_price: "100",
       total_tickets: "500",
       cover_image: "/images/conference.jpg",
+      paused: true,
     },
-  ];
+  ]);
+
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -131,6 +122,36 @@ const Events = () => {
     }));
     handleClose();
   };
+
+  const handleOpenPauseModal = (index) => {
+    setCurrentEventIndex(index);
+    setPauseModalOpen(true);
+  };
+
+  const handleClosePauseModal = () => {
+    setPauseModalOpen(false);
+    setCurrentEventIndex(null);
+  };
+
+  const handleTogglePauseEvent = () => {
+    setEvents((prevEvents) => {
+      const newEvents = [...prevEvents];
+      newEvents[currentEventIndex].paused = !newEvents[currentEventIndex].paused;
+      return newEvents;
+    });
+    handleClosePauseModal();
+  };
+
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const filteredEvents = events.filter((event) => {
+    if (filter === "all") return true;
+    if (filter === "paused") return event.paused;
+    if (filter === "active") return !event.paused;
+    return true;
+  });
 
   const LocationMarker = () => {
     useMapEvents({
@@ -196,6 +217,16 @@ const Events = () => {
         >
           Add Event
         </Button>
+      </div>
+      <div style={{ padding: "10px" }}>
+      <InputLabel>Filter Events</InputLabel>
+        <FormControl fullWidth>
+          <Select value={filter} onChange={handleFilterChange}>
+            <MenuItem value="all">All Events</MenuItem>
+            <MenuItem value="paused">Paused Events</MenuItem>
+            <MenuItem value="active">Active Events</MenuItem>
+          </Select>
+        </FormControl>
       </div>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle} component="form" onSubmit={handleSubmit}>
@@ -303,24 +334,28 @@ const Events = () => {
       </Modal>
 
       <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
-        <DialogTitle>{"Pause Event"}</DialogTitle>
+        <DialogTitle>
+          {events[currentEventIndex]?.paused ? "Resume Event" : "Pause Event"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Are you sure you want to pause this event?
+            {events[currentEventIndex]?.paused
+              ? "Are you sure you want to resume this event?"
+              : "Are you sure you want to pause this event?"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClosePauseModal} color="primary">
             Cancel
           </Button>
-          <Button onClick={handlePauseEvent} color="primary" autoFocus>
+          <Button onClick={handleTogglePauseEvent} color="primary" autoFocus>
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
 
       <Grid container spacing={3} sx={{ paddingX: 10 }}>
-        {dummyEvents.map((event, index) => (
+        {filteredEvents.map((event, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card>
               <CardMedia
@@ -384,9 +419,9 @@ const Events = () => {
                   size="small"
                   variant="contained"
                   style={{ backgroundColor: "#FFEB3B", color: "#000" }}
-                  onClick={handleOpenPauseModal}
+                  onClick={() => handleOpenPauseModal(index)}
                 >
-                  Pause Event
+                  {event.paused ? "Resume Event" : "Pause Event"}
                 </Button>
                 </div>
               </CardActions>
