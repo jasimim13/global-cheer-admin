@@ -9,11 +9,11 @@ const Sales = () => {
     const onlineSalesChart = echarts.init(document.getElementById('online-sales-chart'));
     const inStoreSalesChart = echarts.init(document.getElementById('instore-sales-chart'));
 
-    const dates = ['2024-07-01', '2024-07-02', '2024-07-03', '2024-07-04', '2024-07-05', '2024-07-06', '2024-07-07'];
+    const dates = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 
     const onlineSalesData = {
       title: {
-        text: 'Online Sales Data'
+        text: 'Online Ticket Sales'
       },
       tooltip: {
         trigger: 'axis',
@@ -27,13 +27,13 @@ const Sales = () => {
           const date = params[0].axisValue;
           let tooltipContent = `<div>${date}</div>`;
           params.forEach(param => {
-            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data}</div>`;
+            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data} Tickets sold</div>`;
           });
           return tooltipContent;
         }
       },
       legend: {
-        data: ['T-Shirt', 'Coffee Mug', 'Laptop Sleeve']
+        data: ['Music Concert', 'Art Exhibition', 'Tech Conference']
       },
       toolbox: {
         feature: {
@@ -94,7 +94,7 @@ const Sales = () => {
 
     const inStoreSalesData = {
       title: {
-        text: 'In-Store Sales Data'
+        text: 'Online Merchandise Sales'
       },
       tooltip: {
         trigger: 'axis',
@@ -108,7 +108,7 @@ const Sales = () => {
           const date = params[0].axisValue;
           let tooltipContent = `<div>${date}</div>`;
           params.forEach(param => {
-            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data}</div>`;
+            tooltipContent += `<div>${param.marker} ${param.seriesName}: ${param.data} units sold</div>`;
           });
           return tooltipContent;
         }
@@ -208,7 +208,7 @@ const Sales = () => {
         <Grid item xs={12} md={6}>
           <Box>
             <Typography variant="h5" component="h2" align="center" color="black" fontFamily={'TimesNewRoman'} >
-              Online Sales
+              Online Ticket Sales
             </Typography>
             <div id="online-sales-chart" style={{ height: '400px', width: '100%' }}></div>
           </Box>
@@ -216,7 +216,7 @@ const Sales = () => {
         <Grid item xs={12} md={6}>
           <Box>
             <Typography variant="h5" component="h2" align="center" color="black" fontFamily={'TimesNewRoman'} >
-              In-Store Sales
+              Online Merchandise Sales
             </Typography>
             <div id="instore-sales-chart" style={{ height: '400px', width: '100%' }}></div>
           </Box>

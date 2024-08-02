@@ -1,4 +1,3 @@
-// src/pages/Community.js
 import React, { useState } from "react";
 import {
   Box,
@@ -34,7 +33,6 @@ const modalStyle = {
 };
 
 const Community = () => {
-  const [isCommunityAllowed, setIsCommunityAllowed] = useState(false);
   const [open, setOpen] = useState(false);
   const [postTitle, setPostTitle] = useState("");
   const [postDescription, setPostDescription] = useState("");
@@ -44,14 +42,11 @@ const Community = () => {
       title: "Welcome to the community!",
       image: "/images/post.jpg",
       timestamp: new Date(),
+      isCommunityAllowed: false,
     },
   ]);
   const [sortOrder, setSortOrder] = useState("newest");
   const navigate = useNavigate();
-
-  const handleSwitchChange = () => {
-    setIsCommunityAllowed(!isCommunityAllowed);
-  };
 
   const handleModalOpen = () => {
     setOpen(true);
@@ -79,6 +74,7 @@ const Community = () => {
         title: postTitle.trim(),
         image: URL.createObjectURL(postImage),
         timestamp: new Date(),
+        isCommunityAllowed: false,
       };
       setPosts([newPost, ...posts]);
       handleModalClose();
@@ -106,6 +102,12 @@ const Community = () => {
       }
     });
     setPosts(sortedPosts);
+  };
+
+  const handleSwitchChange = (index) => {
+    setPosts(posts.map((post, i) =>
+      i === index ? { ...post, isCommunityAllowed: !post.isCommunityAllowed } : post
+    ));
   };
 
   return (
@@ -143,121 +145,115 @@ const Community = () => {
       >
         Community
       </Typography>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isCommunityAllowed}
-            onChange={handleSwitchChange}
-            color="primary"
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginBottom: 20,
+        }}
+      >
+        <Button
+          variant="contained"
+          color="error"
+          onClick={handleModalOpen}
+          sx={{
+            backgroundColor: "#ED1F24",
+            color: "white",
+          }}
+        >
+          Add New Post
+        </Button>
+        <FormControl sx={{ minWidth: 120 }}>
+          <InputLabel>Sort By</InputLabel>
+          <Select value={sortOrder} onChange={handleSortChange}>
+            <MenuItem value="newest">Newest</MenuItem>
+            <MenuItem value="oldest">Oldest</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+      <Grid container spacing={2}>
+        {posts.map((post, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{post.title}</Typography>
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  style={{ width: "100%", height: "auto", marginTop: 10 }}
+                />
+                <Typography variant="caption" display="block">
+                  {new Date(post.timestamp).toLocaleString()}
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={post.isCommunityAllowed}
+                      onChange={() => handleSwitchChange(index)}
+                      color="primary"
+                    />
+                  }
+                  label="Allow Community Tab for Mobile App"
+                  sx={{ marginTop: 2 }}
+                />
+              </CardContent>
+              <CardActions>
+                <IconButton
+                  onClick={() => handleDeletePost(index)}
+                  sx={{ color: "#ED1F24" }}
+                >
+                  <Delete />
+                </IconButton>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+
+      <Modal open={open} onClose={handleModalClose}>
+        <Box sx={modalStyle} component="form">
+          <Typography variant="h6" component="h2">
+            Add New Post
+          </Typography>
+          <TextField
+            label="Post Title"
+            fullWidth
+            margin="normal"
+            value={postTitle}
+            onChange={handlePostChange}
           />
-        }
-        label="Allow Community Tab for Mobile App"
-        sx={{ display: "flex", justifyContent: "center", marginBottom: 4 }}
-      />
-      {isCommunityAllowed && (
-        <>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+          <TextField
+            label="Post Description"
+            fullWidth
+            margin="normal"
+            value={postDescription}
+            onChange={handleDescriptionChange}
+            multiline
+          />
+          <Button
+            variant="contained"
+            component="label"
+            sx={{ marginTop: 2, marginRight: 2 }}
+          >
+            Upload Images
+            <input type="file" hidden onChange={handleImageChange} />
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="error"
+            onClick={handleAddPost}
+            sx={{
+              backgroundColor: "#ED1F24",
+              color: "white",
+              marginTop: 2,
             }}
           >
-            <Button
-              variant="contained"
-              color="error"
-              onClick={handleModalOpen}
-              sx={{
-                backgroundColor: "#ED1F24",
-                color: "white",
-              }}
-            >
-              Add New Post
-            </Button>
-            <div>
-              {/* <p>Sort By</p> */}
-              <FormControl>
-                {/* <InputLabel sx={{ marginBottom: '40px' }} >Sort By</InputLabel> */}
-                <Select value={sortOrder} onChange={handleSortChange}>
-                  <MenuItem value="newest">Newest</MenuItem>
-                  <MenuItem value="oldest">Oldest</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-          <Grid container spacing={2}>
-            {posts.map((post, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">{post.title}</Typography>
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      style={{ width: "100%", height: "auto", marginTop: 10 }}
-                    />
-                    <Typography variant="caption" display="block">
-                      {new Date(post.timestamp).toLocaleString()}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <IconButton
-                      onClick={() => handleDeletePost(index)}
-                      sx={{ color: "#ED1F24" }}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-
-          <Modal open={open} onClose={handleModalClose}>
-            <Box sx={modalStyle} component="form">
-              <Typography variant="h6" component="h2">
-                Add New Post
-              </Typography>
-              <TextField
-                label="Post Title"
-                fullWidth
-                margin="normal"
-                value={postTitle}
-                onChange={handlePostChange}
-              />
-              <TextField
-                label="Post Description"
-                fullWidth
-                margin="normal"
-                value={postDescription}
-                onChange={handleDescriptionChange}
-                multiline
-              />
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ marginTop: 2, marginRight: 2 }}
-              >
-                Upload Images
-                <input type="file" hidden onChange={handleImageChange} />
-              </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                color="error"
-                onClick={handleAddPost}
-                sx={{
-                  backgroundColor: "#ED1F24",
-                  color: "white",
-                  marginTop: 2,
-                }}
-              >
-                Submit Post
-              </Button>
-            </Box>
-          </Modal>
-        </>
-      )}
+            Submit Post
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 };

@@ -116,20 +116,14 @@ const Orders = () => {
 
   return (
     <Box sx={{ width: "100%", padding: "20px", typography: "body1" }}>
-      <AppBar position="static" color="default" elevation={1}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={() => navigate("/")}
-          >
-            <ArrowBack />
-          </IconButton>
-          <Typography variant="h6" sx={{ flexGrow: 1, textAlign: "center" }}>
-            Orders
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        onClick={() => navigate("/")}
+      >
+        Go Back
+      </Button>
       <Container>
         <Box
           sx={{
@@ -146,19 +140,24 @@ const Orders = () => {
             style={{ height: "100px", width: "200px", marginBottom: "20px" }}
           />
         </Box>
-        <AppBar position="static" color="default">
+        {/* <div style={{ backgroundColor: 'red', width: '100%' }} > */}
           <Tabs
             value={selectedTab}
             onChange={handleChange}
             aria-label="order tabs"
-            indicatorColor="secondary"
+            // indicatorColor="red"
+            sx={{
+              '& .MuiTabs-indicator': {
+                backgroundColor: 'red',
+              },
+            }}
             textColor="inherit"
-            variant="fullWidth"
+            // variant="fullWidth"
           >
             <Tab label="All Orders" value="1" />
             <Tab label="Pending" value="2" />
           </Tabs>
-        </AppBar>
+          {/* </div> */}
         <TabPanel value={selectedTab} index="1">
           <Grid container spacing={3}>
             {dummyOrders.map((order) => (

@@ -11,6 +11,9 @@ import Home from "./pages/Home/Home";
 import Auth from "./pages/Auth/Auth";
 import Orders from "./pages/Orders/Orders";
 import UserManagement from "./pages/UserManagement/UserManagement";
+import Stock from "./pages/Stock/Stock";
+import Category from "./pages/Category/Category";
+import AddMerchandise from './pages/Add-Merchandise/AddMerchandise'
 
 function App() {
   return (
@@ -27,7 +30,10 @@ function App() {
           <Route path="/sales" element={<Sales />} />
           <Route path="/qrcode" element={<QRCode />} />
           <Route path="/orders" element={<Orders />} />
+          <Route path="/stock" element={<Stock />} />
+          <Route path="/category/:categoryName" element={<Category />} />
           <Route path="/usermanagement" element={<UserManagement />} />
+          <Route path="/add-merchandise" element={<AddMerchandise />} />
         </Routes>
       </div>
     </Router>
