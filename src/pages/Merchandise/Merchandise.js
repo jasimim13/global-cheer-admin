@@ -68,7 +68,7 @@ const Merchandise = () => {
         Go Back
       </Button>
       <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
-        <DialogTitle>{"Pause Event"}</DialogTitle>
+        <DialogTitle>{"Pause Merchandise"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to pause this Merchandise?
@@ -146,7 +146,7 @@ const Merchandise = () => {
           >
             <Card
               sx={{
-                width: "300px",
+                width: "330px",
                 cursor: "pointer",
                 boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)",
                 transition: "0.3s",
@@ -188,7 +188,7 @@ const Merchandise = () => {
                     style={{ backgroundColor: "#FFEB3B", color: "#000" }}
                     onClick={handleOpenPauseModal}
                   >
-                    Pause Event
+                    Pause Merchandse
                   </Button>
                 </div>
               </CardActions>
