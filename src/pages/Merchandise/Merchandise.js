@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Card,
@@ -6,13 +6,46 @@ import {
   Typography,
   CardActions,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { ArrowForward, Info } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #ED1F24",
+  boxShadow: 24,
+  p: 4,
+};
+
 const Merchandise = () => {
   const navigate = useNavigate();
+  const [pauseModalOpen, setPauseModalOpen] = useState(false); // New state for pause confirmation modal
+  // Existing state and functions ...
+
+  const handleOpenPauseModal = () => {
+    setPauseModalOpen(true);
+  };
+
+  const handleClosePauseModal = () => {
+    setPauseModalOpen(false);
+  };
+
+  const handlePauseEvent = () => {
+    // Implement the pause logic here
+    console.log("Event paused!");
+    handleClosePauseModal();
+  };
 
   const merchandiseCategories = [
     { name: "Shirt", image: "/images/t-shirt.jpg" },
@@ -34,6 +67,22 @@ const Merchandise = () => {
       >
         Go Back
       </Button>
+      <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
+        <DialogTitle>{"Pause Event"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to pause this Merchandise?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePauseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handlePauseEvent} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div
         style={{
           display: "flex",
@@ -122,39 +171,22 @@ const Merchandise = () => {
                 </Typography>
               </CardContent>
               <CardActions style={{ justifyContent: "space-between" }}>
-                <Button
-                  size="small"
-                  color="primary"
-                  onClick={() =>
-                    navigate(`/category/${category.name.toLowerCase()}`)
-                  }
-                  sx={{ color: "#ED1F24" }}
-                >
-                  View Details
-                </Button>
-                <div>
-                  {/* <IconButton
-                    color="primary"
-                    onClick={() => navigate(`/category/${category.name.toLowerCase()}`)}
-                    sx={{ color: "#ED1F24" }}
-                  >
-                    <Info />
-                  </IconButton> */}
-                  <IconButton
-                    color="primary"
+                <div style={{display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'flex-end', width:'100%'}} >
+                  <Button
+                    size="small"
                     onClick={() =>
                       navigate(`/category/${category.name.toLowerCase()}`)
                     }
-                    sx={{ color: "#ED1F24" }}
+                    variant="contained"
+                    style={{ backgroundColor: "#ED1F24", color: "#ffffff" }}
                   >
-                    <ArrowForward />
-                  </IconButton>
+                    View Details
+                  </Button>
                   <Button
                     size="small"
-                    sx={{
-                      backgroundColor: "#F5F567",
-                      fontFamily: "TimesNewRoman",
-                    }}
+                    variant="contained"
+                    style={{ backgroundColor: "#FFEB3B", color: "#000" }}
+                    onClick={handleOpenPauseModal}
                   >
                     Pause Event
                   </Button>

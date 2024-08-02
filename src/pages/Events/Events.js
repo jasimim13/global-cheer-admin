@@ -10,6 +10,12 @@ import {
   CardContent,
   CardMedia,
   CardActions,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+
 } from "@mui/material";
 import {
   LocationOn,
@@ -46,6 +52,23 @@ const Events = () => {
     cover_image: "",
   });
   const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]);
+  const [pauseModalOpen, setPauseModalOpen] = useState(false); // New state for pause confirmation modal
+  // Existing state and functions ...
+
+  const handleOpenPauseModal = () => {
+    setPauseModalOpen(true);
+  };
+
+  const handleClosePauseModal = () => {
+    setPauseModalOpen(false);
+  };
+
+  const handlePauseEvent = () => {
+    // Implement the pause logic here
+    console.log("Event paused!");
+    handleClosePauseModal();
+  };
+
 
   const navigate = useNavigate();
 
@@ -117,8 +140,15 @@ const Events = () => {
     });
 
     return markerPosition === null ? null : (
-      <Marker position={markerPosition} icon={new L.Icon({ iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png" })}>
-      </Marker>
+      <Marker
+        position={markerPosition}
+        icon={
+          new L.Icon({
+            iconUrl:
+              "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+          })
+        }
+      ></Marker>
     );
   };
 
@@ -200,9 +230,7 @@ const Events = () => {
                 zoom={13}
                 style={{ height: "200px", width: "100%" }}
               >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                 <LocationMarker />
               </MapContainer>
             </Grid>
@@ -274,6 +302,23 @@ const Events = () => {
         </Box>
       </Modal>
 
+      <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
+        <DialogTitle>{"Pause Event"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to pause this event?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePauseModal} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handlePauseEvent} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Grid container spacing={3} sx={{ paddingX: 10 }}>
         {dummyEvents.map((event, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
@@ -327,19 +372,23 @@ const Events = () => {
                 </Typography>
               </CardContent>
               <CardActions>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'flex-end', width:'100%' }} >
                 <Button
                   size="small"
-                  color="primary"
-                  sx={{ color: "#ED1F24", fontFamily: "TimesNewRoman" }}
+                  variant="contained"
+                  style={{ backgroundColor: "#ED1F24", color: "#ffffff" }}
                 >
                   Learn More
                 </Button>
                 <Button
                   size="small"
-                  sx={{ backgroundColor: "#F5F567", fontFamily: "TimesNewRoman" }}
+                  variant="contained"
+                  style={{ backgroundColor: "#FFEB3B", color: "#000" }}
+                  onClick={handleOpenPauseModal}
                 >
                   Pause Event
                 </Button>
+                </div>
               </CardActions>
             </Card>
           </Grid>
