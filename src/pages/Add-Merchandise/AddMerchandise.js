@@ -28,6 +28,7 @@ const AddMerchandise = () => {
   const [postImage, setPostImage] = useState(null);
   const [customSize, setCustomSize] = useState(false);
   const [customStock, setCustomStock] = useState(false);
+  const [customColor, setCustomColor] = useState(false);
   const [merchData, setMerchData] = useState({
     name: "",
     description: "",
@@ -35,6 +36,7 @@ const AddMerchandise = () => {
     size: "",
     customSizeValue: "",
     color: "",
+    customColorValue: "",
     price: "",
     image_url: "",
     stock: "",
@@ -89,6 +91,23 @@ const AddMerchandise = () => {
       setMerchData((prevData) => ({
         ...prevData,
         stock: event.target.value,
+      }));
+    }
+  };
+
+  const handleColorChange = (event) => {
+    if (event.target.value === "custom") {
+      setCustomColor(true);
+      setMerchData((prevData) => ({
+        ...prevData,
+        color: "",
+        customColorValue: "",
+      }));
+    } else {
+      setCustomColor(false);
+      setMerchData((prevData) => ({
+        ...prevData,
+        color: event.target.value,
       }));
     }
   };
@@ -159,15 +178,35 @@ const AddMerchandise = () => {
               />
             )}
           </Grid>
+
           <Grid item xs={12}>
-            <TextField
+            <Typography>Color</Typography>
+            <Select
               label="Color"
               name="color"
               value={merchData.color}
-              onChange={handleChange}
+              onChange={handleColorChange}
               fullWidth
               required
-            />
+            >
+              <MenuItem value="Black">Black</MenuItem>
+              <MenuItem value="Red">Red</MenuItem>
+              <MenuItem value="Orange">Orange</MenuItem>
+              <MenuItem value="Yellow">Yellow</MenuItem>
+              <MenuItem value="Green">Green</MenuItem>
+              <MenuItem value="custom">Custom</MenuItem>
+            </Select>
+            {customColor && (
+              <TextField
+                label="Custom Color"
+                name="customColorValue"
+                value={merchData.customColorValue}
+                onChange={handleChange}
+                fullWidth
+                required
+                sx={{ marginTop: 2 }}
+              />
+            )}
           </Grid>
           <Grid item xs={12}>
             <TextField

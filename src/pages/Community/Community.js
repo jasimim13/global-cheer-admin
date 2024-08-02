@@ -164,13 +164,15 @@ const Community = () => {
         >
           Add New Post
         </Button>
+        <div>
+        <InputLabel>Sort By</InputLabel>
         <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Sort By</InputLabel>
           <Select value={sortOrder} onChange={handleSortChange}>
             <MenuItem value="newest">Newest</MenuItem>
             <MenuItem value="oldest">Oldest</MenuItem>
           </Select>
         </FormControl>
+        </div>
       </div>
       <Grid container spacing={2}>
         {posts.map((post, index) => (
