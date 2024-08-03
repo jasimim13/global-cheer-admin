@@ -21,6 +21,8 @@ import {
   MenuItem,
   InputLabel,
   Select,
+  useMediaQuery,
+  Grid,
 } from "@mui/material";
 import { Edit, Delete, Download, Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -71,6 +73,8 @@ const Users = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -89,14 +93,16 @@ const Users = () => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width: isMobile ? '90%' : isTablet ? '60%' : 400,
+    maxHeight: '90vh',
+    overflowY: 'auto',
     bgcolor: "background.paper",
     border: "2px solid #ED1F24",
     boxShadow: 24,
     p: 4,
   };
 
-  const renderTable = (usersToDisplay, isAdminSection = false) => (
+  const renderTable = (usersToDisplay) => (
     <TableContainer component={Paper}>
       <Table
         sx={{ minWidth: 650, fontFamily: "TimesNewRoman" }}
@@ -119,21 +125,25 @@ const Users = () => {
                 Email
               </Typography>
             </TableCell>
-            <TableCell>
-              <Typography sx={{ color: "white", fontWeight: "bold" }}>
-                Profile Image
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography sx={{ color: "white", fontWeight: "bold" }}>
-                Created At
-              </Typography>
-            </TableCell>
-            <TableCell>
-              <Typography sx={{ color: "white", fontWeight: "bold" }}>
-                Updated At
-              </Typography>
-            </TableCell>
+            {!isMobile && (
+              <>
+                <TableCell>
+                  <Typography sx={{ color: "white", fontWeight: "bold" }}>
+                    Profile Image
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography sx={{ color: "white", fontWeight: "bold" }}>
+                    Created At
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography sx={{ color: "white", fontWeight: "bold" }}>
+                    Updated At
+                  </Typography>
+                </TableCell>
+              </>
+            )}
             <TableCell>
               <Typography sx={{ color: "white", fontWeight: "bold" }}>
                 Actions
@@ -150,11 +160,15 @@ const Users = () => {
               <TableCell>{user.username}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>{user.email}</TableCell>
-              <TableCell>
-                <Avatar src={user.profile_image} alt={user.username} />
-              </TableCell>
-              <TableCell>{user.created_at}</TableCell>
-              <TableCell>{user.updated_at}</TableCell>
+              {!isMobile && (
+                <>
+                  <TableCell>
+                    <Avatar src={user.profile_image} alt={user.username} />
+                  </TableCell>
+                  <TableCell>{user.created_at}</TableCell>
+                  <TableCell>{user.updated_at}</TableCell>
+                </>
+              )}
               <TableCell>
                 <Tooltip title="Edit">
                   <IconButton>
@@ -195,7 +209,7 @@ const Users = () => {
         <img
           src="/images/Logo.jpeg"
           alt="Logo"
-          style={{ height: "100px", width: "200px" }}
+          style={{ height: isMobile ? '60px' : '100px', width: isMobile ? '120px' : '200px' }}
         />
       </div>
       {selectedTab === 1 && (
@@ -204,11 +218,13 @@ const Users = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexDirection: isMobile ? 'column' : 'row',
+            width: '100%',
           }}
         >
           <Typography
-            variant="h3"
-            sx={{ textAlign: "left", fontWeight: "bold" }}
+            variant={isMobile ? "h5" : "h3"}
+            sx={{ textAlign: isMobile ? 'center' : 'left', fontWeight: "bold" }}
           >
             Admin
           </Typography>
@@ -229,18 +245,20 @@ const Users = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            flexDirection: isMobile ? 'column' : 'row',
+            width: '100%',
           }}
         >
           <Typography
-            variant="h3"
-            sx={{ textAlign: "left", fontWeight: "bold" }}
+            variant={isMobile ? "h5" : "h3"}
+            sx={{ textAlign: isMobile ? 'center' : 'left', fontWeight: "bold" }}
           >
             Users
           </Typography>
           <Button
             variant="contained"
             color="error"
-            sx={{ backgroundColor: "#ED1F24", color: "white" }}
+            sx={{ backgroundColor: "#ED1F24", color: "white", my: isMobile ? 2 : 0 }}
           >
             <Download />
           </Button>
@@ -250,7 +268,7 @@ const Users = () => {
         <Tab label="Users" />
         <Tab label="Admin" />
       </Tabs>
-      {selectedTab === 0 ? renderTable(users) : renderTable(adminUsers, true)}
+      {selectedTab === 0 ? renderTable(users) : renderTable(adminUsers)}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -262,28 +280,38 @@ const Users = () => {
             Add New Admin
           </Typography>
           <Box component="form" sx={{ mt: 2 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Username"
-              autoFocus
-            />
-            <TextField margin="normal" required fullWidth label="Email" />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Password"
-              type="password"
-            />
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select labelId="role-label" label="Role" required>
-                <MenuItem value="admin">SubAdmin</MenuItem>
-                <MenuItem value="editor">Manager</MenuItem>
-              </Select>
-            </FormControl>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Username"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField margin="normal" required fullWidth label="Email" />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Password"
+                  type="password"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="role-label">Role</InputLabel>
+                  <Select labelId="role-label" label="Role" required>
+                    <MenuItem value="admin">SubAdmin</MenuItem>
+                    <MenuItem value="editor">Manager</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
             <Button
               type="submit"
               fullWidth

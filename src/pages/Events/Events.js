@@ -19,28 +19,39 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  IconButton,
+  Tooltip,
+  useMediaQuery,
 } from "@mui/material";
 import {
   LocationOn,
   Event,
   AttachMoney,
   ConfirmationNumber,
+  Edit,
+  Delete,
+  Pause,
+  PlayArrow,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "./Events.css"; // Import the CSS file
 
 const modalStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: '90%',
+  maxWidth: 600,
   bgcolor: "background.paper",
   border: "2px solid #ED1F24",
   boxShadow: 24,
   p: 4,
+  maxHeight: '90vh',
+  overflowY: 'auto',
 };
 
 const Events = () => {
@@ -57,7 +68,8 @@ const Events = () => {
   const [markerPosition, setMarkerPosition] = useState([51.505, -0.09]);
   const [pauseModalOpen, setPauseModalOpen] = useState(false);
   const [currentEventIndex, setCurrentEventIndex] = useState(null);
-  const [filter, setFilter] = useState("all"); // New state for filter option
+  const [filter, setFilter] = useState("all");
+  const [editMode, setEditMode] = useState(false);
   const [events, setEvents] = useState([
     {
       name: "Music Concert",
@@ -91,10 +103,25 @@ const Events = () => {
     },
   ]);
 
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
+
   const navigate = useNavigate();
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setEditMode(false);
+    setEventData({
+      name: "",
+      location: "",
+      start_date: "",
+      end_date: "",
+      ticket_price: "",
+      total_tickets: "",
+      cover_image: "",
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,10 +143,19 @@ const Events = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setEventData((prevData) => ({
-      ...prevData,
+    const newEvent = {
+      ...eventData,
       location: `Latitude: ${markerPosition[0]}, Longitude: ${markerPosition[1]}`,
-    }));
+    };
+    if (editMode) {
+      setEvents((prevEvents) => {
+        const updatedEvents = [...prevEvents];
+        updatedEvents[currentEventIndex] = newEvent;
+        return updatedEvents;
+      });
+    } else {
+      setEvents((prevEvents) => [...prevEvents, newEvent]);
+    }
     handleClose();
   };
 
@@ -144,6 +180,17 @@ const Events = () => {
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
+  };
+
+  const handleEditEvent = (index) => {
+    setCurrentEventIndex(index);
+    setEventData(events[index]);
+    setEditMode(true);
+    handleOpen();
+  };
+
+  const handleDeleteEvent = (index) => {
+    setEvents((prevEvents) => prevEvents.filter((_, i) => i !== index));
   };
 
   const filteredEvents = events.filter((event) => {
@@ -218,20 +265,10 @@ const Events = () => {
           Add Event
         </Button>
       </div>
-      <div style={{ padding: "10px" }}>
-      <InputLabel>Filter Events</InputLabel>
-        <FormControl fullWidth>
-          <Select value={filter} onChange={handleFilterChange}>
-            <MenuItem value="all">All Events</MenuItem>
-            <MenuItem value="paused">Paused Events</MenuItem>
-            <MenuItem value="active">Active Events</MenuItem>
-          </Select>
-        </FormControl>
-      </div>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle} component="form" onSubmit={handleSubmit}>
           <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
-            Add New Event
+            {editMode ? "Edit Event" : "Add New Event"}
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -354,10 +391,10 @@ const Events = () => {
         </DialogActions>
       </Dialog>
 
-      <Grid container spacing={3} sx={{ paddingX: 10 }}>
+      <Grid container spacing={3} sx={{ paddingX: isMobile ? 2 : isTablet ? 5 : 10 }}>
         {filteredEvents.map((event, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card>
+            <Card className="event-card">
               <CardMedia
                 component="img"
                 height="140"
@@ -407,22 +444,39 @@ const Events = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'flex-end', width:'100%' }} >
-                <Button
-                  size="small"
-                  variant="contained"
-                  style={{ backgroundColor: "#ED1F24", color: "#ffffff" }}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    justifyContent: "flex-end",
+                    width: "100%",
+                  }}
                 >
-                  Learn More
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  style={{ backgroundColor: "#FFEB3B", color: "#000" }}
-                  onClick={() => handleOpenPauseModal(index)}
-                >
-                  {event.paused ? "Resume Event" : "Pause Event"}
-                </Button>
+                  <Tooltip title="Edit Event" arrow>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEditEvent(index)}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Event" arrow>
+                    <IconButton
+                      color="secondary"
+                      onClick={() => handleDeleteEvent(index)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                  {/* <Tooltip title={event.paused ? "Resume Event" : "Pause Event"} arrow>
+                    <IconButton
+                      color={event.paused ? "primary" : "default"}
+                      onClick={() => handleOpenPauseModal(index)}
+                    >
+                      {event.paused ? <PlayArrow /> : <Pause />}
+                    </IconButton>
+                  </Tooltip> */}
                 </div>
               </CardActions>
             </Card>

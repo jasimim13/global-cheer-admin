@@ -16,16 +16,20 @@ import {
   Select,
   FormControl,
   InputLabel,
+  Tooltip,
+  useMediaQuery,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
+import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const modalStyle = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: '90%',
+  maxWidth: 400,
   bgcolor: "background.paper",
   border: "2px solid #ED1F24",
   boxShadow: 24,
@@ -46,7 +50,11 @@ const Community = () => {
     },
   ]);
   const [sortOrder, setSortOrder] = useState("newest");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(null);
   const navigate = useNavigate();
+
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleModalOpen = () => {
     setOpen(true);
@@ -54,6 +62,11 @@ const Community = () => {
 
   const handleModalClose = () => {
     setOpen(false);
+    setIsEditing(false);
+    setEditingIndex(null);
+    setPostTitle("");
+    setPostDescription("");
+    setPostImage(null);
   };
 
   const handlePostChange = (event) => {
@@ -78,9 +91,34 @@ const Community = () => {
       };
       setPosts([newPost, ...posts]);
       handleModalClose();
-      setPostTitle("");
-      setPostImage(null);
     }
+  };
+
+  const handleEditPost = () => {
+    if (postTitle.trim() !== "") {
+      const updatedPosts = posts.map((post, index) =>
+        index === editingIndex
+          ? {
+              ...post,
+              title: postTitle.trim(),
+              description: postDescription.trim(),
+              image: postImage ? URL.createObjectURL(postImage) : post.image,
+            }
+          : post
+      );
+      setPosts(updatedPosts);
+      handleModalClose();
+    }
+  };
+
+  const handleEditOpen = (index) => {
+    const post = posts[index];
+    setPostTitle(post.title);
+    setPostDescription(post.description);
+    setPostImage(null);
+    setIsEditing(true);
+    setEditingIndex(index);
+    setOpen(true);
   };
 
   const handleDeletePost = (index) => {
@@ -112,12 +150,17 @@ const Community = () => {
 
   return (
     <div
-      style={{ backgroundColor: "white", minHeight: "100vh", padding: "20px" }}
+      style={{
+        backgroundColor: "white",
+        minHeight: "100vh",
+        padding: isMobile ? "10px" : "20px",
+        fontFamily: "TimesNewRoman"
+      }}
     >
       <Button
         variant="contained"
         color="error"
-        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        sx={{ backgroundColor: "#ED1F24", color: "white", marginBottom: "10px" }}
         onClick={() => navigate("/")}
       >
         Go Back
@@ -128,6 +171,7 @@ const Community = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          marginBottom: "10px"
         }}
       >
         <img
@@ -148,67 +192,83 @@ const Community = () => {
       <div
         style={{
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginBottom: 20,
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: isMobile ? "center" : "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+          gap: isMobile ? "10px" : "0",
         }}
       >
         <Button
           variant="contained"
           color="error"
           onClick={handleModalOpen}
-          sx={{
-            backgroundColor: "#ED1F24",
-            color: "white",
-          }}
+          sx={{ backgroundColor: "#ED1F24", color: "white" }}
         >
           Add New Post
         </Button>
-        <div>
-        <InputLabel>Sort By</InputLabel>
-        <FormControl sx={{ minWidth: 120 }}>
-          <Select value={sortOrder} onChange={handleSortChange}>
+        <FormControl>
+          <InputLabel>Sort By</InputLabel>
+          <Select
+            value={sortOrder}
+            onChange={handleSortChange}
+            sx={{ width: isMobile ? "100%" : "200px" }}
+          >
             <MenuItem value="newest">Newest</MenuItem>
             <MenuItem value="oldest">Oldest</MenuItem>
           </Select>
         </FormControl>
-        </div>
       </div>
       <Grid container spacing={2}>
         {posts.map((post, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{post.title}</Typography>
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  style={{ width: "100%", height: "auto", marginTop: 10 }}
-                />
-                <Typography variant="caption" display="block">
-                  {new Date(post.timestamp).toLocaleString()}
-                </Typography>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={post.isCommunityAllowed}
-                      onChange={() => handleSwitchChange(index)}
-                      color="primary"
-                    />
-                  }
-                  label="Allow Community Tab for Mobile App"
-                  sx={{ marginTop: 2 }}
-                />
-              </CardContent>
-              <CardActions>
-                <IconButton
-                  onClick={() => handleDeletePost(index)}
-                  sx={{ color: "#ED1F24" }}
-                >
-                  <Delete />
-                </IconButton>
-              </CardActions>
-            </Card>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Card>
+                <CardContent>
+                  <Typography variant="h6">{post.title}</Typography>
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    style={{ width: "100%", height: "auto", marginTop: 10 }}
+                  />
+                  <Typography variant="caption" display="block">
+                    {new Date(post.timestamp).toLocaleString()}
+                  </Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={post.isCommunityAllowed}
+                        onChange={() => handleSwitchChange(index)}
+                        color="primary"
+                      />
+                    }
+                    label="Allow Community Tab for Mobile App"
+                    sx={{ marginTop: 2 }}
+                  />
+                </CardContent>
+                <CardActions>
+                  <Tooltip title="Edit Post">
+                    <IconButton
+                      onClick={() => handleEditOpen(index)}
+                      sx={{ color: "#ED1F24" }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Delete Post">
+                    <IconButton
+                      onClick={() => handleDeletePost(index)}
+                      sx={{ color: "#ED1F24" }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </CardActions>
+              </Card>
+            </motion.div>
           </Grid>
         ))}
       </Grid>
@@ -216,17 +276,17 @@ const Community = () => {
       <Modal open={open} onClose={handleModalClose}>
         <Box sx={modalStyle} component="form">
           <Typography variant="h6" component="h2">
-            Add New Post
+            {isEditing ? "Edit Post" : "Add New Post"}
           </Typography>
           <TextField
-            label="Post Title"
+            placeholder="Post Title"
             fullWidth
             margin="normal"
             value={postTitle}
             onChange={handlePostChange}
           />
           <TextField
-            label="Post Description"
+            placeholder="Post Description"
             fullWidth
             margin="normal"
             value={postDescription}
@@ -242,17 +302,13 @@ const Community = () => {
             <input type="file" hidden onChange={handleImageChange} />
           </Button>
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             color="error"
-            onClick={handleAddPost}
-            sx={{
-              backgroundColor: "#ED1F24",
-              color: "white",
-              marginTop: 2,
-            }}
+            onClick={isEditing ? handleEditPost : handleAddPost}
+            sx={{ backgroundColor: "#ED1F24", color: "white", marginTop: 2 }}
           >
-            Submit Post
+            {isEditing ? "Save Changes" : "Submit Post"}
           </Button>
         </Box>
       </Modal>
