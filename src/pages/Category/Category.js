@@ -16,21 +16,10 @@ import {
   Paper,
   Select,
   MenuItem,
+  useMediaQuery
 } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #ED1F24",
-  boxShadow: 24,
-  p: 4,
-};
 
 const Category = () => {
   const { categoryName } = useParams();
@@ -43,6 +32,8 @@ const Category = () => {
   const [customSize, setCustomSize] = useState(false);
   const [customStock, setCustomStock] = useState(false);
   const [customColor, setCustomColor] = useState(false);
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
   const [merchData, setMerchData] = useState({
     name: "",
     description: "",
@@ -56,6 +47,19 @@ const Category = () => {
     stock: "",
     customStockValue: "",
   });
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '90%' : '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
+  };
 
   const [dummyMerchandise, setDummyMerchandise] = useState({
     Shirt: [

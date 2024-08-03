@@ -33,19 +33,6 @@ import {
   Edit,
 } from "@mui/icons-material";
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "90%",
-  maxWidth: 600,
-  bgcolor: "background.paper",
-  border: "2px solid #ED1F24",
-  boxShadow: 24,
-  p: 4,
-};
-
 const Merchandise = () => {
   const navigate = useNavigate();
   const [pauseModalOpen, setPauseModalOpen] = useState(false);
@@ -63,6 +50,21 @@ const Merchandise = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedMerch, setSelectedMerch] = useState(null);
   const [postImage, setPostImage] = useState(null);
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '80%' : '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
+  };
 
   const [merchandiseCategories, setMerchandiseCategories] = useState([
     {
@@ -138,9 +140,6 @@ const Merchandise = () => {
     stock: "",
     customStockValue: "",
   });
-
-  const isMobile = useMediaQuery("(max-width:600px)");
-  const isTablet = useMediaQuery("(max-width:960px)");
 
   const handleOpenPauseModal = (index) => {
     setCurrentMerchIndex(index);

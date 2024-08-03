@@ -23,19 +23,6 @@ import { Delete, Edit } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: '90%',
-  maxWidth: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #ED1F24",
-  boxShadow: 24,
-  p: 4,
-};
-
 const Community = () => {
   const [open, setOpen] = useState(false);
   const [postTitle, setPostTitle] = useState("");
@@ -55,9 +42,23 @@ const Community = () => {
   const navigate = useNavigate();
 
   const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
 
   const handleModalOpen = () => {
     setOpen(true);
+  };
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '90%' : '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
   };
 
   const handleModalClose = () => {

@@ -73,6 +73,8 @@ const Users = () => {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [openModal, setOpenModal] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editUser, setEditUser] = useState(null);
   const isMobile = useMediaQuery('(max-width:600px)');
   const isTablet = useMediaQuery('(max-width:960px)');
 
@@ -88,21 +90,30 @@ const Users = () => {
     setOpenModal(false);
   };
 
-  const modalStyle = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: isMobile ? '90%' : isTablet ? '60%' : 400,
-    maxHeight: '90vh',
-    overflowY: 'auto',
-    bgcolor: "background.paper",
-    border: "2px solid #ED1F24",
-    boxShadow: 24,
-    p: 4,
+  const handleOpenEditModal = (user) => {
+    setEditUser(user);
+    setEditModalOpen(true);
   };
 
-  const renderTable = (usersToDisplay) => (
+  const handleCloseEditModal = () => {
+    setEditUser(null);
+    setEditModalOpen(false);
+  };
+
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '90%' : '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
+  };
+
+  const renderTable = (usersToDisplay, isAdmin = false) => (
     <TableContainer component={Paper}>
       <Table
         sx={{ minWidth: 650, fontFamily: "TimesNewRoman" }}
@@ -170,11 +181,13 @@ const Users = () => {
                 </>
               )}
               <TableCell>
-                <Tooltip title="Edit">
-                  <IconButton>
-                    <Edit sx={{ color: "#ED1F24" }} />
-                  </IconButton>
-                </Tooltip>
+                {isAdmin && (
+                  <Tooltip title="Edit">
+                    <IconButton onClick={() => handleOpenEditModal(user)}>
+                      <Edit sx={{ color: "#ED1F24" }} />
+                    </IconButton>
+                  </Tooltip>
+                )}
                 <Tooltip title="Delete">
                   <IconButton>
                     <Delete sx={{ color: "#ED1F24" }} />
@@ -268,7 +281,7 @@ const Users = () => {
         <Tab label="Users" />
         <Tab label="Admin" />
       </Tabs>
-      {selectedTab === 0 ? renderTable(users) : renderTable(adminUsers)}
+      {selectedTab === 0 ? renderTable(users) : renderTable(adminUsers, true)}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -323,6 +336,65 @@ const Users = () => {
           </Box>
         </Box>
       </Modal>
+      <Modal
+      open={editModalOpen}
+      onClose={handleCloseEditModal}
+      aria-labelledby="edit-modal-title"
+      aria-describedby="edit-modal-description"
+    >
+      <Box sx={modalStyle}>
+        <Typography id="edit-modal-title" variant="h6" component="h2">
+          Edit Admin
+        </Typography>
+        {editUser && (
+          <Box component="form" sx={{ mt: 2 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Username"
+                  defaultValue={editUser.username}
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Email"
+                  defaultValue={editUser.email}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel id="role-edit-label">Role</InputLabel>
+                  <Select
+                    labelId="role-edit-label"
+                    label="Role"
+                    defaultValue={editUser.role}
+                    required
+                  >
+                    <MenuItem value="admin">SubAdmin</MenuItem>
+                    <MenuItem value="editor">Manager</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, bgcolor: "#ED1F24" }}
+            >
+              Save Changes
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </Modal>
     </div>
   );
 };

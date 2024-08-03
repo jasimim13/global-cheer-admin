@@ -9,27 +9,12 @@ import {
   Card,
   CardContent,
   Modal,
-  AppBar,
-  Chip,
-  Toolbar,
-  IconButton,
   Container,
+  Chip,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #ED1F24",
-  boxShadow: 24,
-  p: 4,
-  borderRadius: 2,
-};
 
 const getStatusColor = (status) => {
   switch (status) {
@@ -92,6 +77,9 @@ const Orders = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentOrder, setCurrentOrder] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -114,12 +102,25 @@ const Orders = () => {
     handleCloseModal();
   };
 
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '90%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '90%' : '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto',
+  };
+
   return (
-    <Box sx={{ width: "100%", padding: "20px", typography: "body1" }}>
+    <Box sx={{ width: "100%", p: isMobile ? 2 : 4, typography: "body1", overflowX: 'hidden' }}>
       <Button
         variant="contained"
         color="error"
-        sx={{ backgroundColor: "#ED1F24", color: "white" }}
+        sx={{ backgroundColor: "#ED1F24", color: "white", mb: 2 }}
         onClick={() => navigate("/")}
       >
         Go Back
@@ -131,38 +132,35 @@ const Orders = () => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            marginBottom: "20px",
+            mb: 3,
           }}
         >
           <img
             src="/images/Logo.jpeg"
             alt="Logo"
-            style={{ height: "100px", width: "200px", marginBottom: "20px" }}
+            style={{ height: isMobile ? "80px" : "100px", width: isMobile ? "160px" : "200px", mb: 2 }}
           />
         </Box>
-        {/* <div style={{ backgroundColor: 'red', width: '100%' }} > */}
-          <Tabs
-            value={selectedTab}
-            onChange={handleChange}
-            aria-label="order tabs"
-            // indicatorColor="red"
-            sx={{
-              '& .MuiTabs-indicator': {
-                backgroundColor: 'red',
-              },
-            }}
-            textColor="inherit"
-            // variant="fullWidth"
-          >
-            <Tab label="All Orders" value="1" />
-            <Tab label="Pending" value="2" />
-          </Tabs>
-          {/* </div> */}
+        <Tabs
+          value={selectedTab}
+          onChange={handleChange}
+          aria-label="order tabs"
+          sx={{
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'red',
+            },
+          }}
+          textColor="inherit"
+          variant={isMobile ? "fullWidth" : "standard"}
+        >
+          <Tab label="All Orders" value="1" />
+          <Tab label="Pending" value="2" />
+        </Tabs>
         <TabPanel value={selectedTab} index="1">
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {dummyOrders.map((order) => (
               <Grid item xs={12} md={4} key={order.id}>
-                <Card sx={{ padding: "20px", borderRadius: 2 }}>
+                <Card sx={{ p: 2, borderRadius: 2 }}>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       {order.name}
@@ -185,7 +183,7 @@ const Orders = () => {
                       sx={{
                         backgroundColor: "#ED1F24",
                         color: "white",
-                        marginTop: 2,
+                        mt: 2,
                       }}
                       onClick={() => handleOpenModal(order)}
                     >
@@ -198,12 +196,12 @@ const Orders = () => {
           </Grid>
         </TabPanel>
         <TabPanel value={selectedTab} index="2">
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {dummyOrders
               .filter((order) => order.status === "Pending")
               .map((order) => (
                 <Grid item xs={12} md={4} key={order.id}>
-                  <Card sx={{ padding: "20px", borderRadius: 2 }}>
+                  <Card sx={{ p: 2, borderRadius: 2 }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
                         {order.name}
@@ -226,7 +224,7 @@ const Orders = () => {
                         sx={{
                           backgroundColor: "#ED1F24",
                           color: "white",
-                          marginTop: 2,
+                          mt: 2,
                         }}
                         onClick={() => handleOpenModal(order)}
                       >
@@ -264,7 +262,7 @@ const Orders = () => {
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    marginTop: 4,
+                    mt: 4,
                   }}
                 >
                   <Button

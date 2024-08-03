@@ -16,7 +16,8 @@ import {
   Tab,
   Modal,
   Box,
-  TextField
+  TextField,
+  useMediaQuery
 } from "@mui/material";
 import { Edit, Delete, Download, Add } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -64,6 +65,9 @@ const UserManagement = () => {
     },
   ];
 
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const isTablet = useMediaQuery('(max-width:960px)');
+
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState(0);
   const [openModal, setOpenModal] = useState(false);
@@ -85,11 +89,12 @@ const UserManagement = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: isMobile ? '90%' : '80%',
     bgcolor: 'background.paper',
-    border: '2px solid #ED1F24',
     boxShadow: 24,
     p: 4,
+    overflowY: 'auto',
   };
 
   const renderTable = (usersToDisplay, isAdminSection = false) => (

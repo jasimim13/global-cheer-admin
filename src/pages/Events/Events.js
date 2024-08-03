@@ -39,21 +39,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./Events.css"; // Import the CSS file
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: '90%',
-  maxWidth: 600,
-  bgcolor: "background.paper",
-  border: "2px solid #ED1F24",
-  boxShadow: 24,
-  p: 4,
-  maxHeight: '90vh',
-  overflowY: 'auto',
-};
-
 const Events = () => {
   const [open, setOpen] = useState(false);
   const [eventData, setEventData] = useState({
@@ -102,12 +87,25 @@ const Events = () => {
       paused: true,
     },
   ]);
-
-  const isMobile = useMediaQuery('(max-width:600px)');
+  
+  const isMobile = useMediaQuery('(max-width:590px)');
   const isTablet = useMediaQuery('(max-width:960px)');
-
+  
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    maxHeight: '80%',
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
+    overflowY: 'auto'
+  };  
+  
   const navigate = useNavigate();
-
+  
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -122,7 +120,7 @@ const Events = () => {
       cover_image: "",
     });
   };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEventData((prevData) => ({
@@ -130,7 +128,7 @@ const Events = () => {
       [name]: value,
     }));
   };
-
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -140,7 +138,7 @@ const Events = () => {
       }));
     }
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const newEvent = {
@@ -158,17 +156,17 @@ const Events = () => {
     }
     handleClose();
   };
-
+  
   const handleOpenPauseModal = (index) => {
     setCurrentEventIndex(index);
     setPauseModalOpen(true);
   };
-
+  
   const handleClosePauseModal = () => {
     setPauseModalOpen(false);
     setCurrentEventIndex(null);
   };
-
+  
   const handleTogglePauseEvent = () => {
     setEvents((prevEvents) => {
       const newEvents = [...prevEvents];
@@ -177,314 +175,315 @@ const Events = () => {
     });
     handleClosePauseModal();
   };
-
+  
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
-
+  
   const handleEditEvent = (index) => {
     setCurrentEventIndex(index);
     setEventData(events[index]);
     setEditMode(true);
     handleOpen();
   };
-
+  
   const handleDeleteEvent = (index) => {
     setEvents((prevEvents) => prevEvents.filter((_, i) => i !== index));
   };
-
+  
   const filteredEvents = events.filter((event) => {
     if (filter === "all") return true;
     if (filter === "paused") return event.paused;
     if (filter === "active") return !event.paused;
     return true;
   });
-
+  
   const LocationMarker = () => {
     useMapEvents({
       click(e) {
         setMarkerPosition([e.latlng.lat, e.latlng.lng]);
       },
     });
-
+    
     return markerPosition === null ? null : (
       <Marker
-        position={markerPosition}
-        icon={
-          new L.Icon({
-            iconUrl:
-              "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-          })
-        }
+      position={markerPosition}
+      icon={
+        new L.Icon({
+          iconUrl:
+          "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+        })
+      }
       ></Marker>
     );
   };
-
+  
   return (
     <div style={{ fontFamily: "TimesNewRoman", padding: "10px" }}>
-      <Button
-        variant="contained"
-        color="error"
-        sx={{ backgroundColor: "#ED1F24", color: "white" }}
-        onClick={() => navigate("/")}
-      >
-        Go Back
+    <Button
+    variant="contained"
+    color="error"
+    sx={{ backgroundColor: "#ED1F24", color: "white" }}
+    onClick={() => navigate("/")}
+    >
+    Go Back
+    </Button>
+    <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    }}
+    >
+    <img
+    src="/images/Logo.jpeg"
+    alt="Logo"
+    style={{ height: "100px", width: "200px" }}
+    />
+    </div>
+    <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px",
+    }}
+    >
+    <p style={{ fontSize: "30px", fontWeight: "bold" }}>Your Events</p>
+    <Button
+    variant="contained"
+    color="error"
+    onClick={handleOpen}
+    sx={{
+      backgroundColor: "#ED1F24",
+      color: "white",
+    }}
+    >
+    Add Event
+    </Button>
+    </div>
+    <Modal open={open} onClose={handleClose}>
+    <Box sx={modalStyle} component="form" onSubmit={handleSubmit}>
+    <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+    {editMode ? "Edit Event" : "Add New Event"}
+    </Typography>
+    <Grid container spacing={2}>
+    <Grid item xs={12}>
+    <TextField
+    label="Name"
+    name="name"
+    value={eventData.name}
+    onChange={handleChange}
+    fullWidth
+    required
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <TextField
+    label="Location"
+    name="location"
+    value={eventData.location}
+    onChange={handleChange}
+    fullWidth
+    required
+    InputProps={{ readOnly: true }}
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <MapContainer
+    center={markerPosition}
+    zoom={13}
+    style={{ height: "200px", width: "100%" }}
+    >
+    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    <LocationMarker />
+    </MapContainer>
+    </Grid>
+    <Grid item xs={12}>
+    <TextField
+    label="Start Date"
+    name="start_date"
+    type="date"
+    value={eventData.start_date}
+    onChange={handleChange}
+    fullWidth
+    required
+    InputLabelProps={{ shrink: true }}
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <TextField
+    label="End Date"
+    name="end_date"
+    type="date"
+    value={eventData.end_date}
+    onChange={handleChange}
+    fullWidth
+    required
+    InputLabelProps={{ shrink: true }}
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <TextField
+    label="Ticket Price"
+    name="ticket_price"
+    type="number"
+    value={eventData.ticket_price}
+    onChange={handleChange}
+    fullWidth
+    required
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <TextField
+    label="Total Tickets"
+    name="total_tickets"
+    type="number"
+    value={eventData.total_tickets}
+    onChange={handleChange}
+    fullWidth
+    required
+    />
+    </Grid>
+    <Grid item xs={12}>
+    <Button
+    variant="contained"
+    component="label"
+    sx={{ marginTop: 2, marginRight: 2 }}
+    >
+    Upload Images
+    <input type="file" hidden onChange={handleImageChange} />
+    </Button>
+    </Grid>
+    </Grid>
+    <Button
+    type="submit"
+    variant="contained"
+    color="error"
+    sx={{ backgroundColor: "#ED1F24", color: "white", marginTop: 2 }}
+    >
+    Submit
+    </Button>
+    </Box>
+    </Modal>
+    
+    <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
+    <DialogTitle>
+    {events[currentEventIndex]?.paused ? "Resume Event" : "Pause Event"}
+    </DialogTitle>
+    <DialogContent>
+    <DialogContentText>
+    {events[currentEventIndex]?.paused
+      ? "Are you sure you want to resume this event?"
+      : "Are you sure you want to pause this event?"}
+      </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+      <Button onClick={handleClosePauseModal} color="primary">
+      Cancel
       </Button>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          src="/images/Logo.jpeg"
-          alt="Logo"
-          style={{ height: "100px", width: "200px" }}
-        />
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "10px",
-        }}
-      >
-        <p style={{ fontSize: "30px", fontWeight: "bold" }}>Your Events</p>
-        <Button
-          variant="contained"
-          color="error"
-          onClick={handleOpen}
-          sx={{
-            backgroundColor: "#ED1F24",
-            color: "white",
-          }}
-        >
-          Add Event
-        </Button>
-      </div>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={modalStyle} component="form" onSubmit={handleSubmit}>
-          <Typography variant="h6" component="h2" sx={{ marginBottom: 2 }}>
-            {editMode ? "Edit Event" : "Add New Event"}
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Name"
-                name="name"
-                value={eventData.name}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Location"
-                name="location"
-                value={eventData.location}
-                onChange={handleChange}
-                fullWidth
-                required
-                InputProps={{ readOnly: true }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <MapContainer
-                center={markerPosition}
-                zoom={13}
-                style={{ height: "200px", width: "100%" }}
-              >
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <LocationMarker />
-              </MapContainer>
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Start Date"
-                name="start_date"
-                type="date"
-                value={eventData.start_date}
-                onChange={handleChange}
-                fullWidth
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="End Date"
-                name="end_date"
-                type="date"
-                value={eventData.end_date}
-                onChange={handleChange}
-                fullWidth
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Ticket Price"
-                name="ticket_price"
-                type="number"
-                value={eventData.ticket_price}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Total Tickets"
-                name="total_tickets"
-                type="number"
-                value={eventData.total_tickets}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ marginTop: 2, marginRight: 2 }}
-              >
-                Upload Images
-                <input type="file" hidden onChange={handleImageChange} />
-              </Button>
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            variant="contained"
-            color="error"
-            sx={{ backgroundColor: "#ED1F24", color: "white", marginTop: 2 }}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Modal>
-
-      <Dialog open={pauseModalOpen} onClose={handleClosePauseModal}>
-        <DialogTitle>
-          {events[currentEventIndex]?.paused ? "Resume Event" : "Pause Event"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {events[currentEventIndex]?.paused
-              ? "Are you sure you want to resume this event?"
-              : "Are you sure you want to pause this event?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClosePauseModal} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleTogglePauseEvent} color="primary" autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
+      <Button onClick={handleTogglePauseEvent} color="primary" autoFocus>
+      Confirm
+      </Button>
+      </DialogActions>
       </Dialog>
-
+      
       <Grid container spacing={3} sx={{ paddingX: isMobile ? 2 : isTablet ? 5 : 10 }}>
-        {filteredEvents.map((event, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card className="event-card">
-              <CardMedia
-                component="img"
-                height="140"
-                image={event.cover_image}
-                alt={event.name}
-              />
-              <CardContent>
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  style={{ fontFamily: "TimesNewRoman" }}
-                >
-                  {event.name}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="textSecondary"
-                  style={{ fontFamily: "TimesNewRoman" }}
-                >
-                  <LocationOn sx={{ verticalAlign: "middle", mr: 1 }} />
-                  {event.location}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="textSecondary"
-                  style={{ fontFamily: "TimesNewRoman" }}
-                >
-                  <Event sx={{ verticalAlign: "middle", mr: 1 }} />
-                  {`${event.start_date} - ${event.end_date}`}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="textSecondary"
-                  style={{ fontFamily: "TimesNewRoman" }}
-                >
-                  <AttachMoney sx={{ verticalAlign: "middle", mr: 1 }} />
-                  {event.ticket_price} dollars
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="textSecondary"
-                  style={{ fontFamily: "TimesNewRoman" }}
-                >
-                  <ConfirmationNumber sx={{ verticalAlign: "middle", mr: 1 }} />
-                  {event.total_tickets} tickets
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "15px",
-                    justifyContent: "flex-end",
-                    width: "100%",
-                  }}
-                >
-                  <Tooltip title="Edit Event" arrow>
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleEditEvent(index)}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title="Delete Event" arrow>
-                    <IconButton
-                      color="secondary"
-                      onClick={() => handleDeleteEvent(index)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                  {/* <Tooltip title={event.paused ? "Resume Event" : "Pause Event"} arrow>
-                    <IconButton
-                      color={event.paused ? "primary" : "default"}
-                      onClick={() => handleOpenPauseModal(index)}
-                    >
-                      {event.paused ? <PlayArrow /> : <Pause />}
-                    </IconButton>
-                  </Tooltip> */}
-                </div>
-              </CardActions>
-            </Card>
+      {filteredEvents.map((event, index) => (
+        <Grid item xs={12} sm={6} md={4} key={index}>
+        <Card className="event-card">
+        <CardMedia
+        component="img"
+        height="140"
+        image={event.cover_image}
+        alt={event.name}
+        />
+        <CardContent>
+        <Typography
+        gutterBottom
+        variant="h5"
+        component="div"
+        style={{ fontFamily: "TimesNewRoman" }}
+        >
+        {event.name}
+        </Typography>
+        <Typography
+        variant="h6"
+        color="textSecondary"
+        style={{ fontFamily: "TimesNewRoman" }}
+        >
+        <LocationOn sx={{ verticalAlign: "middle", mr: 1 }} />
+        {event.location}
+        </Typography>
+        <Typography
+        variant="h6"
+        color="textSecondary"
+        style={{ fontFamily: "TimesNewRoman" }}
+        >
+        <Event sx={{ verticalAlign: "middle", mr: 1 }} />
+        {`${event.start_date} - ${event.end_date}`}
+        </Typography>
+        <Typography
+        variant="h6"
+        color="textSecondary"
+        style={{ fontFamily: "TimesNewRoman" }}
+        >
+        <AttachMoney sx={{ verticalAlign: "middle", mr: 1 }} />
+        {event.ticket_price} dollars
+        </Typography>
+        <Typography
+        variant="h6"
+        color="textSecondary"
+        style={{ fontFamily: "TimesNewRoman" }}
+        >
+        <ConfirmationNumber sx={{ verticalAlign: "middle", mr: 1 }} />
+        {event.total_tickets} tickets
+        </Typography>
+        </CardContent>
+        <CardActions>
+        <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "15px",
+          justifyContent: "flex-end",
+          width: "100%",
+        }}
+        >
+        <Tooltip title="Edit Event" arrow>
+        <IconButton
+        color="primary"
+        onClick={() => handleEditEvent(index)}
+        >
+        <Edit />
+        </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete Event" arrow>
+        <IconButton
+        color="secondary"
+        onClick={() => handleDeleteEvent(index)}
+        >
+        <Delete />
+        </IconButton>
+        </Tooltip>
+        {/* <Tooltip title={event.paused ? "Resume Event" : "Pause Event"} arrow>
+          <IconButton
+          color={event.paused ? "primary" : "default"}
+          onClick={() => handleOpenPauseModal(index)}
+          >
+          {event.paused ? <PlayArrow /> : <Pause />}
+          </IconButton>
+          </Tooltip> */}
+          </div>
+          </CardActions>
+          </Card>
           </Grid>
         ))}
-      </Grid>
-    </div>
-  );
-};
-
-export default Events;
+        </Grid>
+        </div>
+      );
+    };
+    
+    export default Events;
+    
