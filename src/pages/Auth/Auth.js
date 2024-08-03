@@ -111,7 +111,7 @@ export default function Auth() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
                 sx={{ mt: 3, mb: 2, backgroundColor: '#ED1F24' }}
               >
                 Sign In

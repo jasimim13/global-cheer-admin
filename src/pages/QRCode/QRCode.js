@@ -59,7 +59,7 @@ const QRCode = () => {
         variant="contained"
         color="error"
         sx={{ backgroundColor: "#ED1F24", color: "white" }}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         Go Back
       </Button>

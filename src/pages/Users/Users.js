@@ -105,7 +105,7 @@ const Users = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    width: isMobile ? '80%' : isTablet ? '70%' : '30%',
     maxHeight: isMobile ? '90%' : '80%',
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -207,7 +207,7 @@ const Users = () => {
         variant="contained"
         color="error"
         sx={{ backgroundColor: "#ED1F24", color: "white" }}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         Go Back
       </Button>

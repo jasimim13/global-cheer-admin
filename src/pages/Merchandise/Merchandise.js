@@ -58,7 +58,7 @@ const Merchandise = () => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: isMobile ? '80%' : isTablet ? '70%' : '50%',
+    width: isMobile ? '80%' : isTablet ? '70%' : '30%',
     maxHeight: isMobile ? '80%' : '80%',
     bgcolor: 'background.paper',
     boxShadow: 24,
@@ -391,7 +391,7 @@ const Merchandise = () => {
           color: "white",
           marginBottom: "20px",
         }}
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         Go Back
       </Button>

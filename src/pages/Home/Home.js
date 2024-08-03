@@ -63,7 +63,7 @@ const Home = () => {
           variant="contained"
           color="error"
           sx={{ backgroundColor: '#ED1F24', color: 'white', marginRight: '15px' }}
-          onClick={() => navigate('/auth')}
+          onClick={() => navigate('/')}
           startIcon={<FaSignOutAlt />}
         >
           Log Out
